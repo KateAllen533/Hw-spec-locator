@@ -1,0 +1,100 @@
+{
+  "id": "hpe-proliant-xd685",
+  "vendor": "HPE",
+  "family": "ProLiant Compute",
+  "model": "XD685",
+  "category": "server",
+  "aiFactory": true,
+  "keywords": ["xd685", "gpu", "amd epyc", "training", "dlc"],
+  "summary": "8-GPU ProLiant Compute XD685. Every claim is unverified because the extract came from a third-party PDF copy of a document titled as HPE QuickSpecs, not from hpe.com.",
+  "formFactor": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": "6U air-cooled chassis, 5U for direct liquid cooling",
+    "note": "Not confirmed against hpe.com."
+  },
+  "management": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": ["HPE iLO 6", "1 Gb dedicated front iLO port"]
+  },
+  "processors": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": {
+      "socketCount": 2,
+      "family": "5th Generation AMD EPYC",
+      "partialOptionTable": true,
+      "options": [
+        { "model": "EPYC 9655", "frequency": "2.6 GHz", "cores": 96, "cache": "384 MB", "tdpWatts": 400, "ddr5": "6400 MT/s" },
+        { "model": "EPYC 9645", "frequency": "2.0-2.2 GHz", "cores": 96, "cache": "256 MB", "tdpWatts": 320, "ddr5": "6400 MT/s" },
+        { "model": "EPYC 9575F", "frequency": "3.3 GHz", "cores": 64, "cache": "512 MB", "tdpWatts": 400, "ddr5": "6400 MT/s" }
+      ]
+    }
+  },
+  "memory": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": {
+      "type": "HPE DDR5 Smart Memory RDIMM",
+      "slots": 24,
+      "slotsPerProcessor": 12,
+      "maxTb": 6,
+      "maxConfiguration": "24 x 256 GB RDIMM @ 6400 MT/s, 1DPC, for EPYC 9005"
+    }
+  },
+  "storage": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": {
+      "default": "8 EDSFF NVMe E3.S",
+      "withController": "12 EDSFF when the storage controller is installed",
+      "maximumRows": [
+        { "capacity": "122.88 TB", "configuration": "8 x 15.36 TB" },
+        { "capacity": "184.32 TB", "configuration": "12 x 15.36 TB with storage controller" }
+      ],
+      "boot": "NS204i-u with two M.2 NVMe SSDs in RAID 1"
+    }
+  },
+  "accelerators": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": {
+      "count": 8,
+      "namedInExtract": ["NVIDIA H200 air or DLC", "NVIDIA B200 DLC", "NVIDIA B300 DLC", "AMD MI355X DLC"],
+      "options": [{ "description": "8-way GPU server as described by the PDF", "quantity": 8 }]
+    },
+    "note": "GPU TDPs were not in the extracted pages, so they are not invented here."
+  },
+  "networking": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": {
+      "expansion": "8x HHHL PCIe x16 Gen5 and 4x FHHL PCIe x16",
+      "embedded": "1 GbE MLAN"
+    }
+  },
+  "power": {
+    "verification": "unverified",
+    "sourceIds": ["hpe-xd685-qs-third-party"],
+    "value": {
+      "systemPlanningWatts": null,
+      "psuOption": "3000 W CRPS Titanium hot-plug",
+      "note": "The PDF points at HPE Power Advisor for configuration power. 3000 W is a PSU kit rating, not a system load."
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "No lifecycle dates were retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No firmware or driver version was present in the extract.",
+    "components": []
+  },
+  "referenceConfigurations": []
+}

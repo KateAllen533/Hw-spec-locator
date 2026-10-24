@@ -1,0 +1,31 @@
+[
+  {
+    "id": "dell-lc-catalog",
+    "vendor": "Dell",
+    "kind": "catalog",
+    "url": "https://downloads.dell.com/catalog/Catalog.xml.gz",
+    "robotsUrl": "https://downloads.dell.com/robots.txt",
+    "parser": "dell-catalog-xml",
+    "documentedBy": "https://www.dell.com/support/kbdoc/en-us/000132986/dell-emc-catalog-links-for-poweredge-servers",
+    "notes": "Lifecycle Controller catalog of BIOS and firmware metadata. downloads.dell.com robots.txt disallows / except /manuals and /topicspdf. The fetcher records this source unavailable and does not download it. Import a copy you obtained yourself."
+  },
+  {
+    "id": "dell-enterprise-catalog",
+    "vendor": "Dell",
+    "kind": "catalog",
+    "url": "https://downloads.dell.com/catalog/Catalog.gz",
+    "robotsUrl": "https://downloads.dell.com/robots.txt",
+    "parser": "dell-catalog-xml",
+    "documentedBy": "https://www.dell.com/support/kbdoc/en-us/000132986/dell-emc-catalog-links-for-poweredge-servers",
+    "notes": "Dell Enterprise catalog used by Repository Manager and OpenManage Enterprise. Same robots.txt restriction as the Lifecycle Controller catalog."
+  },
+  {
+    "id": "hpe-sdr-index",
+    "vendor": "HPE",
+    "kind": "repository-index",
+    "url": "https://downloads.linux.hpe.com/SDR/index.html",
+    "robotsUrl": "https://downloads.linux.hpe.com/robots.txt",
+    "parser": "html-links",
+    "notes": "Public HPE Software Delivery Repository index for spp-gen*, fwpp-gen*, and mcp. On 2026-10-24 robots.txt returned HTTP 404, which this fetcher treats as no crawl restriction. The HTML index is not parsed into package versions."
+  }
+]

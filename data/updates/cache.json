@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1",
+  "records": [],
+  "fetches": [
+    {
+      "sourceId": "dell-lc-catalog",
+      "url": "https://downloads.dell.com/catalog/Catalog.xml.gz",
+      "status": "unavailable",
+      "reason": "Snapshot of https://downloads.dell.com/robots.txt retrieved 2026-10-24. User-agent * Disallow: / with Allow only for /manuals and /topicspdf. The catalog was not downloaded. See data/updates/snapshots/2026-10-24/downloads.dell.com-robots.txt.",
+      "retrievedAt": "2026-10-24T20:28:02Z",
+      "records": []
+    },
+    {
+      "sourceId": "hpe-sdr-index",
+      "url": "https://downloads.linux.hpe.com/SDR/index.html",
+      "status": "unavailable",
+      "reason": "robots.txt at https://downloads.linux.hpe.com/robots.txt returned HTTP 404 on 2026-10-24, so a later fetch is allowed. The starter cache does not contain package versions because the index was not parsed into versions.",
+      "retrievedAt": "2026-10-24T20:28:03Z",
+      "records": []
+    }
+  ]
+}

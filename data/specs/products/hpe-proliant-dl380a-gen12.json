@@ -1,0 +1,111 @@
+{
+  "id": "hpe-proliant-dl380a-gen12",
+  "vendor": "HPE",
+  "family": "ProLiant Compute",
+  "model": "DL380a Gen12",
+  "category": "server",
+  "aiFactory": true,
+  "generation": "Gen12",
+  "keywords": ["ai", "gpu", "dl380a", "inference", "xeon 6", "private cloud ai"],
+  "summary": "4U accelerator-optimized ProLiant Compute DL380a Gen12 for AI inference, with Intel Xeon 6 processors.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-qs"],
+    "value": "4U rack"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-qs", "hpe-dl380a-gen12-product"],
+    "value": ["HPE iLO 6 on the 8DW CTO server (P74461-B21), not upgradable to iLO 7", "HPE iLO 7 on the 8DW/16SW CTO server (P76706-B21)", "HPE Compute Ops Management"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-qs"],
+    "value": {
+      "socketCount": 2,
+      "family": "Intel Xeon 6",
+      "partialOptionTable": true,
+      "options": [
+        { "model": "6766E", "frequency": "1.9 GHz", "cores": 144, "l3CacheMb": 108, "tdpWatts": 250, "upi": 4, "ddr5": "6400 MT/s" },
+        { "model": "6780E", "frequency": "2.2 GHz", "cores": 144, "l3CacheMb": 108, "tdpWatts": 330, "upi": 4, "ddr5": "6400 MT/s" },
+        { "model": "6710E", "frequency": "2.4 GHz", "cores": 64, "l3CacheMb": 96, "tdpWatts": 205, "upi": 4, "ddr5": "5600 MT/s" }
+      ]
+    },
+    "note": "Partial extract of the QuickSpecs Intel Xeon 6 table. The product page summarizes the platform as up to 144 cores at 250 W; the QuickSpecs table also lists 144-core 6780E at 330 W."
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-qs"],
+    "value": {
+      "type": "HPE DDR5 Smart Memory, Registered (RDIMM)",
+      "slots": 32,
+      "slotsPerProcessor": 16,
+      "channelsPerProcessor": 8,
+      "dimmsPerChannel": 2,
+      "maxTbAt2dpc": 8,
+      "maxAt2dpc": "32 x 256 GB RDIMM @ 5200 MT/s",
+      "maxTbAt1dpc": 4,
+      "maxAt1dpc": "16 x 256 GB RDIMM @ 6400 MT/s",
+      "populationNote": "6700-series E-core CPUs limit DIMM quantities per CPU to 1, 2, 4, 8, and 16. 6500/6700 P-core CPUs allow 1, 2, 4, 8, 12, and 16."
+    }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-qs", "hpe-dl380a-gen12-product"],
+    "value": {
+      "chassis": "10 double-wide GPU chassis with one drive bay",
+      "defaultDriveCage": "One 4SFF x4 U.3 NVMe drive cage",
+      "media": "SFF and EDSFF"
+    }
+  },
+  "accelerators": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-qs", "hpe-dl380a-gen12-product"],
+    "value": {
+      "quickspecs": "Up to 10 double-wide GPUs",
+      "productPage": "Up to 16 single-wide NVIDIA L4, or 10 double-wide L40S, H100 NVL, H200, or 8 double-wide RTX PRO 6000 Blackwell Server Edition GPUs",
+      "options": [{ "description": "Double-wide GPU population cited by the QuickSpecs", "quantity": 10 }]
+    },
+    "note": "The product page and QuickSpecs describe different maximum populations. Both are recorded. No single GPU TDP was extracted, so accelerator TDP is not used for power planning."
+  },
+  "networking": {
+    "verification": "unavailable",
+    "sourceIds": ["hpe-dl380a-gen12-qs"],
+    "value": null,
+    "note": "PCIe 5.0 is stated. A NIC option table was not extracted."
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380a-gen12-product"],
+    "value": {
+      "systemPlanningWatts": null,
+      "domains": "Three power domains, two of which have six power supplies dedicated to GPUs",
+      "cooling": "Air-cooled and direct liquid cooling",
+      "note": "System planning watts were not published in the extracted pages. Do not sum GPU marketing counts into a rack load."
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "End-of-support dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No firmware, BIOS, or driver version is included in the starter dataset.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "dl380a-gen12-10dw",
+      "title": "Up to 10 double-wide GPUs in the 4U chassis",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["hpe-dl380a-gen12-qs"],
+      "components": [{ "role": "gpu", "description": "Double-wide GPU", "quantity": 10 }],
+      "note": "Published maximum from the QuickSpecs overview. Not a firmware baseline and not a complete bill of materials."
+    }
+  ]
+}

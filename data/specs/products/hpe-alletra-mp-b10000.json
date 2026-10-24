@@ -1,0 +1,90 @@
+{
+  "id": "hpe-alletra-mp-b10000",
+  "vendor": "HPE",
+  "family": "Alletra Storage MP",
+  "model": "B10000",
+  "category": "storage",
+  "aiFactory": true,
+  "keywords": ["alletra", "nvme", "block", "file", "mp", "b10000"],
+  "summary": "Disaggregated scale-out block and file storage. Effective-capacity figures use HPE's stated 4:1 compaction assumption.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": "2U chassis"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": ["Data Services Cloud Console on HPE GreenLake", "Data Ops Manager"]
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": {
+      "nvmeSsdsPerShelf": 24,
+      "upgradeGranularity": "Drives in 2-drive increments, from 8 to 24 SSDs per enclosure",
+      "maxRawPerShelf": "737.2 TB",
+      "maxEffectivePerShelf": "1993.5 TB",
+      "effectiveAssumption": "4:1 compaction in RAID 6 (10+2), including thin provisioning, deduplication, compression, and copy technologies, plus 9% free-space headroom. Actual ratios vary by workload.",
+      "switchedScale": "Up to 16 JBOF expansion shelves. Footnote 3 describes 16 JBOFs totalling 384 x 15.36 TB SSDs. Marketing text says from 15.36 TB to around 5.8 PB, and also up to 5.9 PB raw in a single system with 2 to 6 controller nodes.",
+      "switchless": "2U chassis can host two controller nodes and up to 24 SFF NVMe drives",
+      "protocols": ["32/64 Gb Fibre Channel", "NVMe/FC", "10/25 GbE iSCSI or NVMe/TCP", "100 GbE iSCSI or NVMe/TCP"]
+    },
+    "note": "The 5.8 PB and 5.9 PB sentences both appear in the QuickSpecs and are both retained. They are not reconciled here."
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": {
+      "hostPortsPerNode": "0-12 ports of 32/64 Gb FC or NVMe/FC on several models; 0-2 or 0-10 ports of 10/25 GbE and 0-2 ports of 100 GbE depending on the configuration table"
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": {
+      "systemPlanningWatts": null,
+      "psuOptions": ["C14 1600 W AC", "C14 2200 W AC", "1600 W -48 VDC", "C20 1500/1800 W AC"],
+      "count": "Two power supplies required per chassis. The chassis does not include power supplies.",
+      "note": "PSU ratings are not a system planning wattage."
+    }
+  },
+  "processors": {
+    "verification": "unavailable",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": null,
+    "note": "Controller CPU details were not extracted."
+  },
+  "memory": {
+    "verification": "unavailable",
+    "sourceIds": ["hpe-alletra-b10000-qs"],
+    "value": null,
+    "note": "Controller memory was not extracted."
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "The QuickSpecs states a 100% data availability guarantee as a product claim. End-of-support dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No array software version is included.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "b10000-switchless-2u",
+      "title": "Switchless 2U chassis with two controller nodes and up to 24 NVMe SSDs",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["hpe-alletra-b10000-qs"],
+      "components": [
+        { "role": "controller", "description": "Controller node", "quantity": 2 },
+        { "role": "drive", "description": "SFF NVMe SSD", "quantity": 24 }
+      ]
+    }
+  ]
+}

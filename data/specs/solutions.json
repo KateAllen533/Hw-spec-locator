@@ -1,0 +1,30 @@
+[
+  {
+    "authoredBy": "plugin",
+    "notAVendorDocument": true,
+    "id": "plugin-index-dell-ai-factory",
+    "title": "Plugin index: Dell AI Factory components in this dataset",
+    "note": "Navigation index maintained by this plugin. It is not a Dell AI Factory reference architecture, bill of materials, or firmware baseline.",
+    "componentProductIds": [
+      "dell-poweredge-xe9680",
+      "dell-poweredge-xe8640",
+      "dell-poweredge-xe9712",
+      "dell-powerscale-f710",
+      "dell-powerswitch-z9864f-on"
+    ]
+  },
+  {
+    "authoredBy": "plugin",
+    "notAVendorDocument": true,
+    "id": "plugin-index-hpe-private-cloud-ai",
+    "title": "Plugin index: HPE Private Cloud AI / NVIDIA AI Computing by HPE components in this dataset",
+    "note": "Navigation index maintained by this plugin. It is not an HPE Private Cloud AI reference architecture. Cray XD and Juniper platform specs are not in the starter dataset. XD685 claims are unverified.",
+    "componentProductIds": [
+      "hpe-proliant-dl380a-gen12",
+      "hpe-proliant-dl384-gen12",
+      "hpe-proliant-xd685",
+      "hpe-alletra-mp-b10000",
+      "hpe-aruba-cx-9300-32d"
+    ]
+  }
+]

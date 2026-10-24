@@ -1,0 +1,96 @@
+{
+  "id": "hpe-aruba-cx-9300-32d",
+  "vendor": "HPE",
+  "family": "Aruba Networking CX",
+  "model": "CX 9300-32D",
+  "category": "network",
+  "aiFactory": true,
+  "keywords": ["aruba", "aos-cx", "9300", "400gbe", "evpn", "spine", "leaf"],
+  "summary": "1U 25.6 Tbps fixed switch with 32 QSFP-DD ports for 100/200/400 GbE leaf and spine roles.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": "1U"
+  },
+  "management": {
+    "verification": "unavailable",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": null,
+    "note": "Management-port details were not extracted from the QuickSpecs."
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": {
+      "ports": "32 QSFP-DD supporting 100, 200, or 400 GbE, plus 2x 10G SFP+",
+      "breakout": "128 x 100 GbE or 64 x 200 GbE using breakouts. 25 or 50 GbE split-out was described as a future software release.",
+      "switchingCapacity": "25.6 Tbps",
+      "packetBufferMb": 132,
+      "role": "100 GbE leaf or 100/400 GbE spine. QuickSpecs cite EVPN-VXLAN leaf and spine and storage QoS with AOS-CX.",
+      "scaleExamples": "Up to 6000 x 25 GbE servers or 2000 x 100 GbE servers per the overview, described as 8x the CX 8325-32C 25 GbE scale."
+    }
+  },
+  "nos": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": ["AOS-CX"]
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": {
+      "systemPlanningWatts": 688,
+      "planningBasis": "Higher published 100% traffic rate at 230 VAC. R9A30A is 688 W at 100% traffic and 221 W idle. R9A29A is 675 W at 100% traffic and 210 W idle.",
+      "psu": "2 redundant hot-swappable power supplies. QuickSpecs also list 1500 W and 1600 W PSU SKUs; those ratings are not the system draw.",
+      "fans": "6 redundant hot-swappable fans"
+    }
+  },
+  "dimensions": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": {
+      "inches": "17.26 x 23.23 x 1.71",
+      "cm": "43.84 x 59 x 4.35",
+      "fullConfigurationWeightLb": 26.12
+    }
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": { "cpu": "x86", "memory": "16 GB x2 SODIMM", "storage": "128 GB m.2 SSD, 4 GB mSATA, 16 MB SPI flash" }
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": { "dram": "16 GB x2 SODIMM" }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["hpe-cx9300-qs"],
+    "value": { "ssd": "128 GB m.2", "msata": "4 GB" }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "No end-of-sale date was retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "The QuickSpecs refers to the most recent AOS-CX release without naming a version in the extract.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "cx9300-32d-spine",
+      "title": "32-port 100/200/400 GbE spine or leaf",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["hpe-cx9300-qs"],
+      "components": [{ "role": "port", "description": "QSFP-DD 100/200/400 GbE", "quantity": 32 }],
+      "note": "Published hardware population. Not a cabling design."
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "id": "dell-poweredge-xe9712",
+  "vendor": "Dell",
+  "family": "PowerEdge XE",
+  "model": "XE9712",
+  "category": "server",
+  "aiFactory": true,
+  "keywords": ["ai", "grace", "blackwell", "xe9712", "ir9048", "openbmc", "idrac 10"],
+  "summary": "1U XE9712 sled for the IR9048 Open Rack v3, with two NVIDIA Grace processors and four Blackwell Ultra GPUs.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": "1U sled. IR9048 is a 48U OCP Open Rack v3. The sheet defines 1 RU as 44.45 mm high and 482.6 mm wide."
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": ["Aspeed AST2600 BMC", "DC-SCI compatible OpenBMC", "BMC-to-NVIDIA HMC", "Optional iDRAC 10 configuration"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": { "socketCount": 2, "model": "NVIDIA Grace", "coresPerProcessor": 72 }
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": {
+      "cpuMemory": "480 GB LPDDR5 with ECC per CPU",
+      "gpuMemory": "288 GB HBM3e per GPU",
+      "coherent": "900 GB/s of coherent memory through NVLink CPU-GPU interconnect"
+    }
+  },
+  "accelerators": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": {
+      "options": [{ "description": "Blackwell Ultra GPU", "quantity": 4, "memory": "288 GB HBM3e" }]
+    },
+    "note": "The specification sheet does not publish a per-GPU wattage for this population. None is inferred."
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": {
+      "front": "Up to 8 x EDSFF E1.S hot-swappable NVMe",
+      "controller": "Direct NVMe using CX8 mezzanine PCIe",
+      "boot": "1 x M.2"
+    }
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": {
+      "lom": "1 GbE integrated LOM",
+      "osfp": "4 x16 CX8 OSFP ports",
+      "dpu": "1 x BlueField-3 SuperNIC FHHL",
+      "pcie": "Up to 2 x16 FHHL Gen5 front risers and 2 mezzanine Gen5/Gen6"
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": {
+      "systemPlanningWatts": null,
+      "rackPower": "IR9048 power shelf PS33 is 33 kW and supports 6 x 5500 W AC PSUs, supplying up to 54 VDC on the rack bus bar",
+      "cooling": ["Air cooling", "Direct liquid cooling"],
+      "fans": "Eight standard dual-rotor fans",
+      "note": "33 kW and 5500 W are rack power-shelf ratings, not the XE9712 sled load. Sled planning watts were not on the extracted sheet."
+    }
+  },
+  "dimensions": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9712-spec"],
+    "value": {
+      "sledHeightMm": 43.6,
+      "sledWidthMm": 438,
+      "sledDepthMm": 836.8,
+      "sledWeightKg": 30,
+      "rackHeightMm": 2294,
+      "rackWidthMm": 750,
+      "rackDepthMm": 1200
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "Lifecycle dates were not retrieved. The sheet lists Ubuntu and points at Dell OS support for interoperability."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No BMC, iDRAC, or GPU driver version is included.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "xe9712-4x-blackwell-ultra",
+      "title": "XE9712 sled with four Blackwell Ultra GPUs",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-xe9712-spec"],
+      "components": [
+        { "role": "cpu", "description": "NVIDIA Grace, 72 cores", "quantity": 2 },
+        { "role": "gpu", "description": "Blackwell Ultra GPU, 288 GB HBM3e", "quantity": 4 }
+      ],
+      "note": "Published sled description. The IR9048 rack population count is not stated in the extract and is not invented."
+    }
+  ]
+}

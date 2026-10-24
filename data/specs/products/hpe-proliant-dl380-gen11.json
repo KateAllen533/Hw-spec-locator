@@ -1,0 +1,101 @@
+{
+  "id": "hpe-proliant-dl380-gen11",
+  "vendor": "HPE",
+  "family": "ProLiant",
+  "model": "DL380 Gen11",
+  "category": "server",
+  "aiFactory": false,
+  "generation": "Gen11",
+  "keywords": ["proliant", "dl380", "gen11", "2u", "ilo", "intel", "xeon"],
+  "summary": "2P 2U HPE ProLiant DL380 Gen11 rack server. Starter extract from the HPE QuickSpecs, including a partial processor table.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": "2U rack"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": ["HPE iLO 6", "iLO RESTful API (DMTF Redfish)", "1 Gb dedicated rear iLO port", "front iLO service port"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": {
+      "socketCount": 2,
+      "families": ["4th Generation Intel Xeon Scalable", "5th Generation Intel Xeon Scalable"],
+      "fieldUpgrade4thTo5thSupported": false,
+      "partialOptionTable": true,
+      "options": [
+        { "model": "Platinum 8592+", "frequency": "1.9 GHz", "cores": 64, "l3Cache": "320 MB", "tdpWatts": 350, "upi": 4, "ddr5": "5600 MT/s", "sgxEnclave": "512 GB", "die": "XCC" },
+        { "model": "Gold 6544Y", "frequency": "3.6 GHz", "cores": 16, "l3Cache": "45.0 MB", "tdpWatts": 270, "upi": 3, "ddr5": "5200 MT/s", "sgxEnclave": "128 GB", "die": "MCC" },
+        { "model": "Silver 4510", "frequency": "2.4 GHz", "cores": 12, "l3Cache": "30.0 MB", "tdpWatts": 150, "upi": 2, "ddr5": "4400 MT/s", "sgxEnclave": "64 GB", "die": "EE LCC" }
+      ]
+    },
+    "note": "The option list is a partial extract of the QuickSpecs processor table, not the full orderable list. 5th Generation processors require a system board shipped for that generation. Field upgrade from 4th Generation to 5th Generation is not supported."
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": {
+      "type": "HPE DDR5 Smart Memory, Registered (RDIMM)",
+      "slots": 32,
+      "slotsPerProcessor": 16,
+      "channelsPerProcessor": 8,
+      "dimmsPerChannel": 2,
+      "maxTb": 8,
+      "maxConfiguration": "32 x 256 GB RDIMM @ 4800 MT/s",
+      "populationNote": "32 DIMMs only with 8SFF or 16SFF; 16 DIMMs maximum with 24SFF. Maximum memory speed is limited by the processor."
+    }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": {
+      "chassis": [
+        "8SFF (SAS/SATA/NVMe) with optional Universal Media Bay and up to 6 SFF rear",
+        "24SFF with up to 6 SFF rear for a total of 30 SFF",
+        "8LFF supporting 2 SFF front and up to 4 LFF rear or 2 SFF rear",
+        "12LFF with optional 4 LFF rear for a total of 16 LFF",
+        "12EDSFF (NVMe) supporting up to 36 EDSFF in front and up to 2 SFF rear"
+      ],
+      "maximumInternalStorage": [
+        { "drive": "Hot Plug SFF SAS HDD", "capacity": "91.2 TB", "configuration": "24+8+6 x 2.4 TB" },
+        { "drive": "Hot Plug SFF SAS SSD", "capacity": "583.3 TB", "configuration": "24 +8+6 15.35 TB" },
+        { "drive": "Hot Plug SFF SATA HDD", "capacity": "76 TB", "configuration": "24+8+6 x 2 TB" },
+        { "drive": "Hot Plug SFF SATA SSD", "capacity": "291.84 TB", "configuration": "24 +8+ 6 x 7.68 TB" },
+        { "drive": "Hot Plug LFF SAS HDD", "capacity": "360 TB", "configuration": "12+4+4x 18 TB (with optional rear LFF drive cage)" },
+        { "drive": "Hot Plug LFF SATA HDD", "capacity": "360 TB", "configuration": "12+4+4 x 18 TB (with optional rear LFF drive cage)" },
+        { "drive": "Hot Plug SFF NVMe PCIe SSD", "capacity": "374.4 TB", "configuration": "24+ x 15.36 TB + 6 x 960GB<10W" },
+        { "drive": "EDSFF NVMe", "capacity": "550.8 TB", "configuration": "36EDSFF Drives x 15.3 TB" }
+      ]
+    },
+    "note": "Maximum internal storage rows are configuration-dependent QuickSpecs figures, stored as extracted. They are not the capacity of every chassis."
+  },
+  "networking": {
+    "verification": "unavailable",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": null,
+    "note": "The starter extract does not include the QuickSpecs networking option table."
+  },
+  "power": {
+    "verification": "unavailable",
+    "sourceIds": ["hpe-dl380-gen11-qs"],
+    "value": null,
+    "note": "PSU wattage and system planning watts were not extracted. Use HPE Power Advisor for a configuration-specific figure."
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "End-of-support dates were not retrieved from an HPE lifecycle page."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No firmware, BIOS, or driver version is included in the starter dataset. Import an HPE firmware repository or a file you obtained yourself. Versions are never synthesized.",
+    "components": []
+  },
+  "referenceConfigurations": []
+}

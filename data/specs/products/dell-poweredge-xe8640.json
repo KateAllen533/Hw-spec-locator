@@ -1,0 +1,109 @@
+{
+  "id": "dell-poweredge-xe8640",
+  "vendor": "Dell",
+  "family": "PowerEdge XE",
+  "model": "XE8640",
+  "category": "server",
+  "aiFactory": true,
+  "keywords": ["ai", "h100", "xe8640", "gpu", "4u"],
+  "summary": "4U PowerEdge XE8640 with four NVIDIA HGX H100 80GB SXM5 GPUs.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": "4U rack"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": ["iDRAC9", "iDRAC Direct", "iDRAC RESTful API with Redfish", "iDRAC Service Module"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "socketCount": 2,
+      "options": [
+        "Two 4th Generation Intel Xeon Scalable processors, up to 56 cores",
+        "Two 5th Generation Intel Xeon Scalable processors, up to 64 cores"
+      ],
+      "chipset": "Intel C741"
+    }
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "type": "DDR5 RDIMM, registered ECC only",
+      "slots": 32,
+      "maxTb": 4,
+      "speed": "Up to 5600 MT/s"
+    }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "front": ["Up to 8 x 2.5-inch SATA/SAS/NVMe, max 122.88 TB", "Up to 8 x E3.S NVMe, max 122.88 TB"],
+      "controllers": ["PERC H965i", "BOSS-N1", "S160"]
+    }
+  },
+  "accelerators": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "options": [{ "description": "NVIDIA HGX H100 80GB 700W SXM5 with NVLink", "quantity": 4, "tdpWattsEach": 700 }]
+    }
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "embeddedNic": "2 x 1 GbE",
+      "ocp": "1 x OCP 3.0 (x8 PCIe lanes)",
+      "pcie": "2-CPU configuration: up to 4 x16 Gen5 slots"
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "systemPlanningWatts": null,
+      "psuOptionsWatts": [2800, 3200],
+      "cooling": "Air cooling for processors. Liquid-assisted air cooling for GPUs. The sheet says no facility water to the rack is required.",
+      "note": "PSU ratings are not a system planning wattage."
+    }
+  },
+  "dimensions": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe8640-spec"],
+    "value": {
+      "heightMm": 174.3,
+      "widthMm": 481.91,
+      "depthWithBezelMm": 901.4,
+      "weightKg": 61.4
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "Lifecycle dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No BIOS, GPU driver, or firmware version is included.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "xe8640-4x-h100",
+      "title": "4x NVIDIA HGX H100 80GB 700W SXM5",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-xe8640-spec"],
+      "components": [{ "role": "gpu", "description": "NVIDIA HGX H100 80GB 700W SXM5", "quantity": 4, "tdpWattsEach": 700 }]
+    }
+  ]
+}

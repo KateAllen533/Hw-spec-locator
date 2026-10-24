@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.*
+*.pem
+*.key
+*.log
+coverage/
+tmp/
+agent-tools/
+offline-bundle-out/
+.DS_Store

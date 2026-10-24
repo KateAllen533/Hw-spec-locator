@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /manuals
+Allow: /topicspdf
+Disallow: /

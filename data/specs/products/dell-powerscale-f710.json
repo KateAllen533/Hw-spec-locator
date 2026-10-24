@@ -1,0 +1,111 @@
+{
+  "id": "dell-powerscale-f710",
+  "vendor": "Dell",
+  "family": "PowerScale",
+  "model": "F710",
+  "category": "storage",
+  "aiFactory": true,
+  "keywords": ["powerscale", "f710", "nvme", "onefs", "ai", "nas"],
+  "summary": "1U all-NVMe PowerScale F710 node, described as leveraging a PowerEdge R660, for generative AI and other high-performance file workloads.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": "1U node"
+  },
+  "management": {
+    "verification": "unavailable",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": null,
+    "note": "The F710 extract does not name the out-of-band manager. Do not assume iDRAC from the R660 base without that sentence in the F710 section."
+  },
+  "processors": {
+    "verification": "unavailable",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": null,
+    "note": "The node is described as leveraging PowerEdge R660. CPU SKUs were not in the F710 table and are not copied from a different server."
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": { "eccMemoryPerNode": "512 GB" }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": {
+      "drivesPerNode": 10,
+      "media": "2.5-inch NVMe SSD",
+      "rawCapacityByDrive": [
+        { "drive": "3.84 TB SSD", "rawNode": "38 TB" },
+        { "drive": "7.68 TB SSD", "rawNode": "77 TB" },
+        { "drive": "15.36 TB SSD", "rawNode": "154 TB" },
+        { "drive": "30.72 TB SSD", "rawNode": "307 TB" },
+        { "drive": "61.4 TB SSD", "rawNode": "614 TB" },
+        { "drive": "122 TB SSD", "rawNode": "1.2 PB" }
+      ],
+      "clusterNodes": "Minimum 3, maximum 252",
+      "features": "Inline compression and deduplication",
+      "sed": "Yes, requires OneFS 9.7",
+      "footnotes": "61 TB ISE requires OneFS 9.10 or later and SED requires OneFS 9.11 or later, per the sheet footnotes. 200/400 GbE options marked with footnote 4 require OneFS 9.14 for F710."
+    },
+    "note": "The operating-system row in the HTML conversion of the F710 table was ambiguous and is not recorded as a OneFS version. SED and footnote requirements are recorded because those cells were explicit."
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": {
+      "frontEnd": [
+        "Dual-port 25 GbE NIC supporting 10 or 25 GbE",
+        "Dual-port 100 GbE NIC supporting 40 or 100 GbE",
+        "Dual-port 200 GbE",
+        "Dual-port 400 GbE",
+        "Dual-port 200 Gb InfiniBand HDR"
+      ],
+      "infrastructure": [
+        "Dual-port 100 GbE NIC supporting 40 or 100 GbE",
+        "Dual-port 200 GbE",
+        "Dual-port 400 GbE",
+        "Dual-port 200 Gb InfiniBand HDR"
+      ],
+      "certification": "Described as the first Ethernet-based storage appliance certified with NVIDIA DGX SuperPOD"
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["dell-powerscale-f710"],
+    "value": {
+      "systemPlanningWatts": 887,
+      "planningBasis": "Published maximum power consumption at 35C, 200-240 V, per node",
+      "alsoPublished": [{ "label": "Maximum at 25C, 200-240 V", "watts": 769 }],
+      "thermal": "2622 BTU/hr at 25C, 3025 BTU/hr at 35C",
+      "note": "The sheet says values below 25C reflect a more steady-state maximum during normal operation. 887 W is the planning default because it is the higher published maximum."
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "Lifecycle dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "OneFS prerequisite notes are not a recommended firmware baseline. No OneFS build number was recorded.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "f710-node",
+      "title": "F710 all-NVMe node",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-powerscale-f710"],
+      "components": [
+        { "role": "drive", "description": "NVMe SSD", "quantity": 10 },
+        { "role": "memory", "description": "512 GB ECC", "quantity": 1 }
+      ],
+      "note": "Drive capacity is selected from the published table. Cluster minimum is 3 nodes."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "kaname-hwops",
+  "description": "Enterprise hardware operations plugins maintained by Kaname Kanam.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Kaname Kanam"
+  },
+  "plugins": [
+    {
+      "name": "hpe-dell-hwops",
+      "source": "./",
+      "description": "HPE and Dell specifications, live inventory, CMDB, PDU mapping, firmware catalogs, and AI-fabric network configuration.",
+      "author": {
+        "name": "Kaname Kanam"
+      },
+      "category": "infrastructure",
+      "tags": [
+        "hpe",
+        "dell",
+        "redfish",
+        "cmdb",
+        "networking",
+        "ai-factory"
+      ]
+    }
+  ]
+}

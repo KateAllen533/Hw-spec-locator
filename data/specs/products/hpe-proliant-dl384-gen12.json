@@ -1,0 +1,116 @@
+{
+  "id": "hpe-proliant-dl384-gen12",
+  "vendor": "HPE",
+  "family": "ProLiant Compute",
+  "model": "DL384 Gen12",
+  "category": "server",
+  "aiFactory": true,
+  "generation": "Gen12",
+  "keywords": ["gh200", "grace hopper", "nvl2", "ai", "inference", "arm"],
+  "summary": "2U air-cooled ProLiant Compute DL384 Gen12 with one or two NVIDIA GH200 Grace Hopper superchips.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-qs", "hpe-dl384-gen12-specs"],
+    "value": "2U air-cooled 19-inch rack, 31.75 in (806 mm) depth"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-qs"],
+    "value": ["HPE iLO 6", "1 Gb dedicated iLO NIC", "front iLO service port"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-qs"],
+    "value": {
+      "superchipsPerServer": "One GH200, or two for GH200 NVL2",
+      "gh200": { "cpuCores": 72, "cpu": "Arm Neoverse V2", "lpddr5xGb": 480, "lpddrBandwidth": "512 GB/s", "baseFrequency": "3.1 GHz" },
+      "gh200Nvl2": { "cpuCores": 144, "cpu": "Arm Neoverse V2", "lpddr5xGb": 960, "lpddrBandwidth": "1024 GB/s", "baseFrequency": "3.0 GHz", "l3CacheMb": 228 }
+    }
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-qs"],
+    "value": {
+      "coherentPerGh200": "Up to 480 GB LPDDR5X plus 144 GB HBM3e",
+      "coherentPerNvl2": "960 GB LPDDR5X plus 288 GB HBM3e",
+      "hbmBandwidthGh200": "Up to 4.9 TB/s",
+      "hbmBandwidthNvl2": "Up to 9.8 TB/s",
+      "nvlinkC2cGh200": "900 GB/s",
+      "nvlinkC2cNvl2": "1800 GB/s",
+      "note": "QuickSpecs note: 96 GB GH200 HBM is available to select customers. With-sparsity tensor figures are marked with an asterisk in the QuickSpecs and are not copied here."
+    }
+  },
+  "accelerators": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-qs"],
+    "value": {
+      "options": [
+        { "description": "NVIDIA GH200 Grace Hopper superchip", "quantity": 1, "hbm": "144 GB HBM3e" },
+        { "description": "NVIDIA GH200 NVL2 (two superchips)", "quantity": 2, "hbm": "288 GB HBM3e combined" }
+      ]
+    }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-specs"],
+    "value": {
+      "drives": "Up to 8 EDSFF NVMe Gen5",
+      "boot": "HW RAID is not supported this generation for M.2 or EDSFF NVMe",
+      "singleSuperchipExamples": ["2 EDSFF and 2 PCIe", "2 EDSFF and 1 OCP", "4 EDSFF and 1 PCIe"]
+    }
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-qs", "hpe-dl384-gen12-specs"],
+    "value": {
+      "expansion": "Up to four PCIe Gen5 x16 FHHL, or up to two FHHL plus two OCP 3.0",
+      "fabrics": "NVIDIA InfiniBand, Ethernet, and BlueField adapters are stated as supported. Option SKUs were not extracted."
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-specs"],
+    "value": {
+      "systemPlanningWatts": null,
+      "psu": "Up to 4 HPE 1800W-2200W Flex Slot Titanium hot-plug supplies",
+      "singleGh200": "2+0, 2+1, or 2+2 redundancy, minimum of two power supplies",
+      "nvl2": "3+1 redundancy and 4 power supplies required",
+      "note": "PSU kit ratings are not a system planning wattage."
+    }
+  },
+  "support": {
+    "verification": "verified",
+    "sourceIds": ["hpe-dl384-gen12-specs"],
+    "value": {
+      "warranty": "3/3/3 parts, labor, and onsite from date of purchase on the regional specifications page",
+      "eol": null
+    },
+    "note": "The warranty statement is not an end-of-support date."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No firmware or driver version is included. Supported OS text says RHEL 9 (9.2+) at launch, with SLES and Ubuntu to follow; that is not a driver baseline.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "dl384-one-gh200",
+      "title": "Single NVIDIA GH200",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["hpe-dl384-gen12-qs"],
+      "components": [{ "role": "superchip", "description": "NVIDIA GH200, 72 Arm cores, 480 GB LPDDR5X, 144 GB HBM3e", "quantity": 1 }]
+    },
+    {
+      "id": "dl384-gh200-nvl2",
+      "title": "Dual NVIDIA GH200 NVL2",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["hpe-dl384-gen12-qs"],
+      "components": [{ "role": "superchip", "description": "GH200 NVL2, 144 Arm cores, 960 GB LPDDR5X, 288 GB HBM3e", "quantity": 1 }],
+      "note": "QuickSpecs configuration tables also label some factory-integrated kits with Gen11 part descriptions. The document title is DL384 Gen12."
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "id": "dell-poweredge-r760",
+  "vendor": "Dell",
+  "family": "PowerEdge",
+  "model": "R760",
+  "category": "server",
+  "aiFactory": false,
+  "keywords": ["poweredge", "r760", "idrac", "2u", "xeon"],
+  "summary": "2U two-socket Dell PowerEdge R760. Figures are from the specification sheet unless marked unverified from the technical guide.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": "2U rack"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": ["iDRAC9", "iDRAC Direct", "iDRAC RESTful API with Redfish", "iDRAC Service Module"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": {
+      "socketCount": 2,
+      "options": [
+        "Up to two 4th Generation Intel Xeon Scalable or Intel Xeon Max processors, up to 56 cores per processor",
+        "Up to two 5th Generation Intel Xeon Scalable processors, up to 64 cores per processor"
+      ]
+    },
+    "note": "Individual CPU SKUs were not copied from the specification sheet."
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": {
+      "type": "DDR5 RDIMM, registered ECC only",
+      "slots": 32,
+      "maxTb": 8,
+      "speed4thGen": "Up to 4800 MT/s",
+      "speed5thGen": "Up to 5600 MT/s"
+    }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": {
+      "controllers": ["PERC H965i", "PERC H755", "PERC H755N", "PERC H355", "PERC H965e", "HBA355e", "HBA355i", "HBA465i", "S160", "BOSS-N1"],
+      "frontBays": [
+        "Up to 12 x 3.5-inch SAS/SATA, max 240 TB",
+        "Up to 8 x 2.5-inch SAS/SATA/NVMe, max 122.88 TB",
+        "Up to 16 x 2.5-inch SAS/SATA/NVMe, max 245.76 TB",
+        "Up to 16 x EDSFF E3.S Gen5 NVMe, max 122.88 TB",
+        "Up to 24 x 2.5-inch SAS/SATA/NVMe, max 368.64 TB"
+      ],
+      "rearBays": [
+        "Up to 2 x 2.5-inch, max 30.72 TB",
+        "Up to 4 x 2.5-inch, max 61.44 TB",
+        "Up to 4 x EDSFF E3.S Gen5 NVMe, max 30.72 TB"
+      ]
+    }
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": { "embeddedNic": "2 x 1 GbE LOM card (optional)" },
+    "note": "OCP and PCIe slot counts from the technical-guide comparison table are stored separately as unverified."
+  },
+  "accelerators": {
+    "verification": "unverified",
+    "sourceIds": ["dell-r760-tech"],
+    "value": { "summary": "Technical guide Table 2, R760 column as extracted: up to two double-wide 350 W, or six single-wide 75 W accelerators." },
+    "note": "PDF table column alignment can be ambiguous, so this claim is unverified."
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": {
+      "systemPlanningWatts": null,
+      "psuOptionsWatts": [3200, 2800, 2400, 1800, 1400, 1100, 800, 700],
+      "cooling": ["Air cooling", "Optional direct liquid cooling"],
+      "note": "Listed numbers are hot-swap PSU option ratings from the specification sheet, not a system planning load."
+    }
+  },
+  "dimensions": {
+    "verification": "verified",
+    "sourceIds": ["dell-r760-spec"],
+    "value": {
+      "heightMm": 86.8,
+      "widthMm": 482,
+      "depthWithBezelMm": 772.13,
+      "depthWithoutBezelMm": 758.29
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "Lifecycle dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No BIOS or firmware version is included. Dell catalog downloads are subject to the robots.txt decision recorded in data/updates.",
+    "components": []
+  },
+  "referenceConfigurations": []
+}

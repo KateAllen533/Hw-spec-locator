@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "hwops": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-server/dist/index.js"],
+      "env": {
+        "HWOPS_PLUGIN_ROOT": "${CLAUDE_PLUGIN_ROOT}",
+        "HWOPS_OFFLINE": "${user_config.offline_mode}",
+        "HWOPS_TLS_VERIFY": "${user_config.tls_verify}"
+      }
+    }
+  }
+}

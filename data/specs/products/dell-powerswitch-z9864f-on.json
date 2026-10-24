@@ -1,0 +1,105 @@
+{
+  "id": "dell-powerswitch-z9864f-on",
+  "vendor": "Dell",
+  "family": "PowerSwitch",
+  "model": "Z9864F-ON",
+  "category": "network",
+  "aiFactory": true,
+  "keywords": ["z9864f", "800gbe", "sonic", "spectrum", "ai fabric", "roce"],
+  "summary": "2U 64-port 800 GbE OSFP112 open networking switch for AI and data-center fabrics, with Enterprise SONiC.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": "2U"
+  },
+  "nos": {
+    "verification": "verified",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": ["Enterprise SONiC by Dell Technologies", "ONIE for alternate network operating systems"]
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": {
+      "ports": "64 x 800 GbE OSFP112 and 2 x 10 GbE SFP+",
+      "rates": "OSFP112 ports support 100/200/400/800 GbE",
+      "breakout": "Up to 128 x 400 GbE, 256 x 200 GbE, or 320 x 100 GbE. The sheet marks some breakout modes provisional at RTS.",
+      "capacity": "102.4 Tbps full duplex, 51.2 Tbps non-blocking half duplex",
+      "features": ["PFC", "DCBX", "RoCEv2", "ETS"],
+      "management": ["RJ45 RS232 console", "USB-C serial", "RJ45 10/100/1000Base-T", "USB 3.0 Type A"],
+      "aiFeaturesNote": "The sheet lists versatile hashing, adaptive routing, cognitive routing, enhanced PFC queue configuration, AI observability, and SmartFabric Manager with asterisks. Those items were not treated as unqualified shipping features."
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": {
+      "systemPlanningWatts": 2848,
+      "planningBasis": "Published maximum utilized power",
+      "typicalWatts": 1500,
+      "available": { "acHighLineWatts": 3000, "acLowLineWatts": 1500, "dcWatts": 3200 },
+      "psus": "Redundant hot-swappable AC or DC power supplies. The installation guide says PSUs are ordered separately.",
+      "note": "Typical 1500 W is not the planning default. Low-line AC availability is 1500 W, which is below the published maximum utilized figure."
+    }
+  },
+  "dimensions": {
+    "verification": "verified",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": {
+      "mm": "438.5 wide x 630 deep x 87.3 high",
+      "weightWithPsuAndFansKg": 25.3,
+      "weightWithoutPsuAndFansKg": 20,
+      "operatingCelsius": "0 to 45"
+    }
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": ["RJ45 10/100/1000Base-T management", "RJ45 RS232 console", "USB-C serial"]
+  },
+  "processors": {
+    "verification": "unavailable",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": null,
+    "note": "Switch CPU details were not in the extracted specification sheet."
+  },
+  "memory": {
+    "verification": "unavailable",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": null,
+    "note": "Switch memory was not in the extracted specification sheet."
+  },
+  "storage": {
+    "verification": "unavailable",
+    "sourceIds": ["dell-z9864f-spec"],
+    "value": null,
+    "note": "On-switch storage was not in the extracted specification sheet."
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "Lifecycle dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No Enterprise SONiC version is included.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "z9864f-64x800",
+      "title": "64 x 800 GbE OSFP112",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-z9864f-spec"],
+      "components": [
+        { "role": "port", "description": "800 GbE OSFP112", "quantity": 64 },
+        { "role": "port", "description": "10 GbE SFP+", "quantity": 2 }
+      ],
+      "note": "Published port population. Airflow direction and PSU type are ordered separately."
+    }
+  ]
+}

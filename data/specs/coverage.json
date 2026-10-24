@@ -1,0 +1,92 @@
+[
+  {
+    "family": "HPE ProLiant DL380 Gen11",
+    "status": "included",
+    "productIds": ["hpe-proliant-dl380-gen11"],
+    "reason": "QuickSpecs extract retrieved 2026-10-24. Processor table is partial."
+  },
+  {
+    "family": "HPE ProLiant DL360",
+    "status": "not-in-starter",
+    "reason": "No QuickSpecs page was retrieved for this curation pass."
+  },
+  {
+    "family": "HPE Synergy",
+    "status": "not-in-starter",
+    "reason": "No Synergy QuickSpecs page was retrieved for this curation pass."
+  },
+  {
+    "family": "HPE ProLiant Compute DL380a Gen12",
+    "status": "included",
+    "productIds": ["hpe-proliant-dl380a-gen12"],
+    "reason": "QuickSpecs and product page retrieved 2026-10-24."
+  },
+  {
+    "family": "HPE ProLiant Compute DL384 Gen12",
+    "status": "included",
+    "productIds": ["hpe-proliant-dl384-gen12"],
+    "reason": "QuickSpecs and regional specifications page retrieved 2026-10-24."
+  },
+  {
+    "family": "HPE ProLiant Compute XD685",
+    "status": "included",
+    "productIds": ["hpe-proliant-xd685"],
+    "reason": "Values are unverified. They were read from a third-party PDF copy, not from hpe.com."
+  },
+  {
+    "family": "HPE Cray XD",
+    "status": "not-in-starter",
+    "reason": "Cray XD is a different family from ProLiant Compute XD685. No Cray XD QuickSpecs page was retrieved."
+  },
+  {
+    "family": "HPE Alletra Storage MP",
+    "status": "included",
+    "productIds": ["hpe-alletra-mp-b10000"],
+    "reason": "B10000 QuickSpecs extract retrieved 2026-10-24."
+  },
+  {
+    "family": "HPE Aruba Networking CX 9300",
+    "status": "included",
+    "productIds": ["hpe-aruba-cx-9300-32d"],
+    "reason": "CX 9300 QuickSpecs retrieved 2026-10-24. Other Aruba and Juniper AI switches are not in the starter set."
+  },
+  {
+    "family": "Juniper AI networking",
+    "status": "not-in-starter",
+    "reason": "No Juniper platform spec sheet was retrieved. Junos configuration templates are still available in net_generate."
+  },
+  {
+    "family": "Dell PowerEdge R760",
+    "status": "included",
+    "productIds": ["dell-poweredge-r760"],
+    "reason": "Specification sheet and technical guide retrieved 2026-10-24. Some technical-guide table cells are marked unverified."
+  },
+  {
+    "family": "Dell PowerEdge R660",
+    "status": "not-in-starter",
+    "reason": "No R660 spec sheet was retrieved. PowerScale F710 cites the R660 as its server base without copying R660 option tables."
+  },
+  {
+    "family": "Dell PowerEdge XE9680, XE8640, XE9712",
+    "status": "included",
+    "productIds": ["dell-poweredge-xe9680", "dell-poweredge-xe8640", "dell-poweredge-xe9712"],
+    "reason": "Specification sheets retrieved 2026-10-24."
+  },
+  {
+    "family": "Dell PowerStore",
+    "status": "not-in-starter",
+    "reason": "No PowerStore spec sheet was retrieved for this curation pass."
+  },
+  {
+    "family": "Dell PowerScale",
+    "status": "included",
+    "productIds": ["dell-powerscale-f710"],
+    "reason": "F710 rows from the all-flash nodes specification sheet. Other PowerScale nodes were not extracted."
+  },
+  {
+    "family": "Dell PowerSwitch Z9864F-ON",
+    "status": "included",
+    "productIds": ["dell-powerswitch-z9864f-on"],
+    "reason": "Specification sheet retrieved 2026-10-24. OS10 S-series switches are not in the starter set; OS10 templates remain available."
+  }
+]

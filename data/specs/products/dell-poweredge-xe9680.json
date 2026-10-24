@@ -1,0 +1,137 @@
+{
+  "id": "dell-poweredge-xe9680",
+  "vendor": "Dell",
+  "family": "PowerEdge XE",
+  "model": "XE9680",
+  "category": "server",
+  "aiFactory": true,
+  "keywords": ["ai", "gpu", "h100", "h200", "xe9680", "training", "hgx"],
+  "summary": "6U air-cooled PowerEdge XE9680 with eight SXM5 or OAM accelerators. GPU populations below are published configuration options, not a firmware baseline.",
+  "formFactor": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": "6U rack"
+  },
+  "management": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": ["iDRAC9", "iDRAC Direct", "iDRAC RESTful API with Redfish", "iDRAC Service Module"]
+  },
+  "processors": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "socketCount": 2,
+      "options": [
+        "Two 5th Generation Intel Xeon Scalable processors, up to 64 cores",
+        "Two 4th Generation Intel Xeon Scalable processors, up to 56 cores"
+      ],
+      "chipset": "Intel C741"
+    }
+  },
+  "memory": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "type": "DDR5 RDIMM, registered ECC only",
+      "slots": 32,
+      "maxTb": 4,
+      "speed5thGen": "Up to 5600 MT/s",
+      "speed4thGen": "Up to 4800 MT/s"
+    }
+  },
+  "storage": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "front": ["Up to 8 x 2.5-inch NVMe/SAS/SATA, max 122.88 TB", "Up to 16 x E3.S NVMe, max 122.88 TB"],
+      "gaudi3Note": "Only 8 x 2.5-inch NVMe SSDs are supported with Intel Gaudi 3",
+      "controllers": ["PERC H965i (not supported with Intel Gaudi 3)", "BOSS-N1", "S160"],
+      "boot": "BOSS-N1 HWRAID, 2 x M.2 SSDs"
+    }
+  },
+  "accelerators": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "options": [
+        { "description": "NVIDIA HGX H100 80GB 700W SXM5", "quantity": 8, "tdpWattsEach": 700 },
+        { "description": "NVIDIA HGX H200 141GB 700W SXM5", "quantity": 8, "tdpWattsEach": 700 },
+        { "description": "NVIDIA HGX H20 96GB 500W SXM5", "quantity": 8, "tdpWattsEach": 500 },
+        { "description": "AMD Instinct MI300X 192GB 750W OAM", "quantity": 8, "tdpWattsEach": 750 },
+        { "description": "Intel Gaudi 3 128GB 900W OAM", "quantity": 8, "tdpWattsEach": 900 }
+      ]
+    },
+    "note": "Accelerator TDPs are component ratings. They are not a system nameplate."
+  },
+  "networking": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "embeddedNic": "2 x 1 GbE",
+      "ocp": "1 x OCP 3.0 (x8 PCIe lanes)",
+      "pcie": "Up to 10 x16 Gen5 full-height half-length, or 8 slots with Intel Gaudi 3",
+      "gaudi3Osfp": "6 x 800 Gb embedded OSFP, available only with Intel Gaudi 3"
+    }
+  },
+  "power": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "systemPlanningWatts": null,
+      "psuOptionsWatts": [3200, 3000, 2800],
+      "cooling": "Air cooling",
+      "note": "PSU wattages are option ratings. The sheet does not state how many PSUs ship or a system maximum. Do not treat 8 x accelerator TDP as the rack load."
+    }
+  },
+  "dimensions": {
+    "verification": "verified",
+    "sourceIds": ["dell-xe9680-spec"],
+    "value": {
+      "heightMm": 263.2,
+      "widthMm": 482,
+      "depthWithBezelMm": 1008.77,
+      "depthWithoutBezelMm": 995,
+      "weightUpToKg": 114.05
+    }
+  },
+  "support": {
+    "verification": "unavailable",
+    "sourceIds": [],
+    "value": null,
+    "note": "Lifecycle dates were not retrieved."
+  },
+  "firmwareBaseline": {
+    "status": "unavailable",
+    "verification": "unavailable",
+    "sourceIds": [],
+    "reason": "No BIOS, GPU driver, or firmware version is included.",
+    "components": []
+  },
+  "referenceConfigurations": [
+    {
+      "id": "xe9680-8x-h100",
+      "title": "8x NVIDIA HGX H100 80GB 700W SXM5",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-xe9680-spec"],
+      "components": [{ "role": "gpu", "description": "NVIDIA HGX H100 80GB 700W SXM5 with NVLink", "quantity": 8, "tdpWattsEach": 700 }]
+    },
+    {
+      "id": "xe9680-8x-h200",
+      "title": "8x NVIDIA HGX H200 141GB 700W SXM5",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-xe9680-spec"],
+      "components": [{ "role": "gpu", "description": "NVIDIA HGX H200 141GB 700W SXM5 with NVLink", "quantity": 8, "tdpWattsEach": 700 }]
+    },
+    {
+      "id": "xe9680-8x-mi300x",
+      "title": "8x AMD Instinct MI300X 192GB 750W",
+      "kind": "published-configuration-option",
+      "verification": "verified",
+      "sourceIds": ["dell-xe9680-spec"],
+      "components": [{ "role": "gpu", "description": "AMD Instinct MI300X 192GB 750W OAM with Infinity Fabric", "quantity": 8, "tdpWattsEach": 750 }]
+    }
+  ]
+}

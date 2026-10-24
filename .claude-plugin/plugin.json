@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "hpe-dell-hwops",
+  "displayName": "HPE and Dell Hardware Operations",
+  "version": "1.0.0",
+  "description": "Specifications, Redfish and CMDB inventory, PDU power mapping, firmware-catalog ingestion, and AI-fabric switch config for HPE and Dell infrastructure.",
+  "author": {
+    "name": "Kaname Kanam"
+  },
+  "license": "MIT",
+  "keywords": [
+    "hpe",
+    "dell",
+    "redfish",
+    "ilo",
+    "idrac",
+    "cmdb",
+    "netbox",
+    "servicenow",
+    "aruba",
+    "os10",
+    "ai-factory",
+    "pdu"
+  ],
+  "userConfig": {
+    "offline_mode": {
+      "type": "boolean",
+      "title": "Air-gapped offline mode",
+      "description": "When true, the MCP server refuses network calls and reads specs, firmware metadata, and the local mirror only from the offline bundle or the shipped dataset.",
+      "default": false
+    },
+    "tls_verify": {
+      "type": "boolean",
+      "title": "Verify TLS certificates",
+      "description": "Verify TLS certificates for Redfish, OneView, OpenManage Enterprise, CMDB, and switch APIs. Leave enabled unless a lab management processor uses a private CA.",
+      "default": true
+    }
+  }
+}

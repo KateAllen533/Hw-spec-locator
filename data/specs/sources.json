@@ -1,0 +1,138 @@
+[
+  {
+    "id": "hpe-dl380-gen11-qs",
+    "publisher": "HPE",
+    "title": "HPE ProLiant DL380 Gen11 QuickSpecs",
+    "url": "https://www.hpe.com/us/en/collaterals/collateral.a50004307enw.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-dl380a-gen12-qs",
+    "publisher": "HPE",
+    "title": "HPE ProLiant Compute DL380a Gen12 QuickSpecs",
+    "url": "https://www.hpe.com/us/en/collaterals/collateral.a00047453enw.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-dl380a-gen12-product",
+    "publisher": "HPE",
+    "title": "HPE ProLiant Compute DL380a Gen12 product page",
+    "url": "https://www.hpe.com/us/en/products/compute/proliant/dl380a-gen12.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-dl384-gen12-qs",
+    "publisher": "HPE",
+    "title": "HPE ProLiant Compute DL384 Gen12 QuickSpecs",
+    "url": "https://www.hpe.com/us/en/collaterals/collateral.a50009209enw.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-dl384-gen12-specs",
+    "publisher": "HPE",
+    "title": "HPE ProLiant Compute DL384 Gen12 specifications (Australia catalog)",
+    "url": "https://www.hpe.com/au/en/product-catalog/compute/proliant-servers/pip.specifications.proliant-dl300-servers.1014835194.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-xd685-qs-third-party",
+    "publisher": "HPE document title; file host is not hpe.com",
+    "title": "HPE ProLiant Compute XD685 QuickSpecs PDF",
+    "url": "https://www.tmv.co.th/filesdirectserver/itp1/z_itp_180620231992/HPEProLiantComputeXD685QuickSpecs-a00073553enwz-z1599668730995.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "third-party-copy",
+    "publisherOriginVerified": false,
+    "note": "The PDF filename contains HPE document id a00073553enw. A request to the matching hpe.com collateral URL failed with an HTTP/2 error on 2026-10-24. Claims that cite this source are unverified against the publisher."
+  },
+  {
+    "id": "dell-r760-spec",
+    "publisher": "Dell Technologies",
+    "title": "PowerEdge R760 specification sheet",
+    "url": "https://www.delltechnologies.com/asset/en-us/products/servers/technical-support/poweredge-r760-spec-sheet.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "dell-r760-tech",
+    "publisher": "Dell Technologies",
+    "title": "Dell PowerEdge R760 Technical Guide",
+    "url": "https://www.delltechnologies.com/asset/en-us/products/servers/technical-support/poweredge-r760-technical-guide.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "dell-xe9680-spec",
+    "publisher": "Dell Technologies",
+    "title": "PowerEdge XE9680 specification sheet",
+    "url": "https://www.delltechnologies.com/asset/en-us/products/servers/technical-support/poweredge-xe9680-spec-sheet.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "dell-xe8640-spec",
+    "publisher": "Dell Technologies",
+    "title": "PowerEdge XE8640 specification sheet",
+    "url": "https://www.delltechnologies.com/asset/da-dk/products/servers/technical-support/poweredge-xe8640-spec-sheet.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "dell-xe9712-spec",
+    "publisher": "Dell Technologies",
+    "title": "PowerEdge XE9712 specification sheet",
+    "url": "https://www.delltechnologies.com/asset/en-us/products/servers/technical-support/poweredge-xe9712-spec-sheet.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "dell-powerscale-f710",
+    "publisher": "Dell Technologies",
+    "title": "Dell PowerScale all-flash nodes specification sheet (h15963), F710 section",
+    "url": "https://www.delltechnologies.com/asset/da-dk/products/storage/technical-support/h15963-ss-powerscale-all-flash-nodes.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-alletra-b10000-qs",
+    "publisher": "HPE",
+    "title": "HPE Alletra Storage MP B10000 QuickSpecs",
+    "url": "https://www.hpe.com/int/en/collaterals/collateral.a50006985enw.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "hpe-cx9300-qs",
+    "publisher": "HPE",
+    "title": "HPE Aruba Networking CX 9300 Switch Series QuickSpecs",
+    "url": "https://www.hpe.com/us/en/collaterals/collateral.a50004291enw.html",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  },
+  {
+    "id": "dell-z9864f-spec",
+    "publisher": "Dell Technologies",
+    "title": "Dell PowerSwitch Z9864F-ON specification sheet",
+    "url": "https://www.delltechnologies.com/asset/en-us/products/networking/technical-support/dell-powerswitch-z9864f-on-spec-sheet.pdf",
+    "retrievedAt": "2026-10-24",
+    "origin": "publisher",
+    "publisherOriginVerified": true
+  }
+]
