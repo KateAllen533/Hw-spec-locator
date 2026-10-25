@@ -28,9 +28,9 @@ const dellCatalog = `<?xml version="1.0"?>
 
 test("Dell robots snapshot blocks the catalog and a local import records the real version", () => {
   const robots = readFileSync(path.join(findPluginRoot(), "data/updates/snapshots/2026-10-24/downloads.dell.com-robots.txt"), "utf8");
-  const decision = robotsDecision(robots, 200, "hpe-dell-hwops/1.0.0", "/catalog/Catalog.xml.gz");
+  const decision = robotsDecision(robots, 200, "hw-spec-locator/1.0.0", "/catalog/Catalog.xml.gz");
   assert.equal(decision.allowed, false);
-  const manuals = robotsDecision(robots, 200, "hpe-dell-hwops/1.0.0", "/manuals/guide.pdf");
+  const manuals = robotsDecision(robots, 200, "hw-spec-locator/1.0.0", "/manuals/guide.pdf");
   assert.equal(manuals.allowed, true);
   const parsed = parseDellCatalog(dellCatalog);
   assert.equal(parsed.length, 1);

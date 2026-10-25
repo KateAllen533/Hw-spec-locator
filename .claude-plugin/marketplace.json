@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "hpe-dell-hwops",
+      "name": "hw-spec-locator",
       "source": "./",
       "description": "HPE and Dell specifications, live inventory, CMDB, PDU mapping, firmware catalogs, and AI-fabric network configuration.",
       "author": {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
-  "name": "hpe-dell-hwops",
-  "displayName": "HPE and Dell Hardware Operations",
+  "name": "hw-spec-locator",
+  "displayName": "HW Spec Locator",
   "version": "1.0.0",
   "description": "Specifications, Redfish and CMDB inventory, PDU power mapping, firmware-catalog ingestion, and AI-fabric switch config for HPE and Dell infrastructure.",
   "author": {

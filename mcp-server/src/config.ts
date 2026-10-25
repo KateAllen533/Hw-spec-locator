@@ -106,7 +106,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): HwopsConfig {
     cachePath,
     mirrorDir,
     fetchMinIntervalMs: Number(env.HWOPS_FETCH_MIN_INTERVAL_MS ?? 1000) || 1000,
-    fetchUserAgent: env.HWOPS_FETCH_USER_AGENT?.trim() || "hpe-dell-hwops/1.0.0",
+    fetchUserAgent: env.HWOPS_FETCH_USER_AGENT?.trim() || "hw-spec-locator/1.0.0",
     offlineAllowHosts: (env.HWOPS_OFFLINE_ALLOW_HOSTS ?? "")
       .split(",")
       .map((s) => s.trim())

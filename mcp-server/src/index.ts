@@ -56,7 +56,7 @@ if (!command || command === "--stdio") {
   process.stdout.write(`${result.message}\n`);
   if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") process.exitCode = 1;
 } else {
-  process.stderr.write(`hpe-dell-hwops commands: fetch, import-local, bundle, verify\n`);
+  process.stderr.write(`hw-spec-locator commands: fetch, import-local, bundle, verify\n`);
   process.exitCode = 2;
 }
 

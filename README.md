@@ -1,10 +1,10 @@
-# HPE and Dell Hardware Operations
+# HW Spec Locator
 
 Claude Code plugin for infrastructure engineers working on HPE and Dell hardware. It searches a sourced specification catalog, reads live inventory, normalizes assets for a CMDB, maps PDU power, ingests public firmware metadata, and drafts AI-fabric switch configuration.
 
-Author: **Kaname Kanam**. License: [MIT](LICENSE).
+Author: **Kaname Kanam**. License: [MIT](LICENSE). Public repository: https://github.com/KateAllen533/Hw-spec-locator
 
-This repository is ready to publish. It contains no credentials, tokens, private keys, or firmware binaries. Publishing to a Git host or to Anthropic's plugin directory is a separate step and is not done here.
+The plugin name is `hw-spec-locator`. The marketplace name is `kaname-hwops`. This tree contains no credentials, tokens, private keys, or firmware binaries. It is not submitted to Anthropic's plugin directory.
 
 ## What you can do
 
@@ -27,16 +27,14 @@ The MCP server entry point is `mcp-server/dist/index.js`. It is built and commit
 
 ## Install
 
-From a local checkout:
-
 ```bash
-claude plugin marketplace add ./
-claude plugin install hpe-dell-hwops@kaname-hwops
+claude plugin marketplace add KateAllen533/Hw-spec-locator
+claude plugin install hw-spec-locator@kaname-hwops
 ```
 
 In a Claude Code session the same actions are `/plugin marketplace add` and `/plugin install`.
 
-After this repository is on GitHub, add that `owner/repo` as the marketplace source and install `hpe-dell-hwops@kaname-hwops`. This README does not name a repository URL because one is not attached yet.
+A local checkout can use `claude plugin marketplace add ./` with the same plugin name.
 
 ## Commands and skills
 
@@ -44,19 +42,19 @@ Commands are explicit. Skills load when the request matches.
 
 | Command | Purpose |
 | --- | --- |
-| `/hpe-dell-hwops:hw-spec` | Search or compare specifications |
-| `/hpe-dell-hwops:inventory` | Redfish, OneView, or OpenManage Enterprise |
-| `/hpe-dell-hwops:cmdb-sync` | Normalize, export, preview, or gated sync |
-| `/hpe-dell-hwops:netconfig` | Validate and draft a switch config |
-| `/hpe-dell-hwops:pdu-map` | PSU-to-outlet load and redundancy |
-| `/hpe-dell-hwops:firmware` | Cached or imported firmware metadata |
-| `/hpe-dell-hwops:offline-bundle` | Export or verify an air-gapped bundle |
+| `/hw-spec-locator:hw-spec` | Search or compare specifications |
+| `/hw-spec-locator:inventory` | Redfish, OneView, or OpenManage Enterprise |
+| `/hw-spec-locator:cmdb-sync` | Normalize, export, preview, or gated sync |
+| `/hw-spec-locator:netconfig` | Validate and draft a switch config |
+| `/hw-spec-locator:pdu-map` | PSU-to-outlet load and redundancy |
+| `/hw-spec-locator:firmware` | Cached or imported firmware metadata |
+| `/hw-spec-locator:offline-bundle` | Export or verify an air-gapped bundle |
 
 Skills: `hardware-spec-search`, `live-inventory`, `cmdb-operations`, `network-fabric`, `ai-factory`, `firmware-updates`, `pdu-power`.
 
 The subagent is `hw-ops`.
 
-MCP server name: `hwops` (shown as `plugin:hpe-dell-hwops:hwops`).
+MCP server name: `hwops` (shown as `plugin:hw-spec-locator:hwops`).
 
 ## MCP tools
 
@@ -104,7 +102,7 @@ Secrets and endpoints are environment variables. Do not put them in `plugin.json
 | `HWOPS_TLS_VERIFY` | `false` only for a lab processor with a private CA |
 | `HWOPS_SPEC_DIR`, `HWOPS_MIRROR_DIR`, `HWOPS_UPDATE_CACHE` | Override data locations |
 | `HWOPS_FETCH_MIN_INTERVAL_MS` | Per-host delay. Default `1000` |
-| `HWOPS_FETCH_USER_AGENT` | Default `hpe-dell-hwops/1.0.0` |
+| `HWOPS_FETCH_USER_AGENT` | Default `hw-spec-locator/1.0.0` |
 | `HWOPS_BUNDLE_SIGNING_KEY` | PEM private key used at export. Not copied into the bundle |
 | `HWOPS_BUNDLE_PUBLIC_KEY` | PEM public key used at verify. A key inside the bundle is not trusted |
 | `HWOPS_PLUGIN_ROOT` | Plugin root, if discovery fails |
@@ -114,7 +112,7 @@ Secrets and endpoints are environment variables. Do not put them in `plugin.json
 Specification search:
 
 ```text
-/hpe-dell-hwops:hw-spec Compare DL380 Gen11 and PowerEdge R760 memory and drive limits
+/hw-spec-locator:hw-spec Compare DL380 Gen11 and PowerEdge R760 memory and drive limits
 ```
 
 The answer should cite verification. Power-supply option watts are not system load. XE9680 8x H100 700 W is accelerator TDP, not a nameplate.
@@ -122,7 +120,7 @@ The answer should cite verification. Power-supply option watts are not system lo
 Live inventory:
 
 ```text
-/hpe-dell-hwops:inventory ilo.example.internal redfish
+/hw-spec-locator:inventory ilo.example.internal redfish
 ```
 
 Set `HWOPS_REDFISH_USERNAME` and `HWOPS_REDFISH_PASSWORD` in the environment first.
@@ -130,7 +128,7 @@ Set `HWOPS_REDFISH_USERNAME` and `HWOPS_REDFISH_PASSWORD` in the environment fir
 CMDB preview, then a gated sync:
 
 ```text
-/hpe-dell-hwops:cmdb-sync preview netbox
+/hw-spec-locator:cmdb-sync preview netbox
 ```
 
 ```bash
@@ -144,7 +142,7 @@ Pass `confirm` as `APPLY` only after you intend the write. ServiceNow matches an
 AI fabric draft:
 
 ```text
-/hpe-dell-hwops:netconfig sonic ai-rail
+/hw-spec-locator:netconfig sonic ai-rail
 ```
 
 Pinned commands are the part that can be applied. PFC, ECN, DCQCN, and EVPN/VXLAN CLI are labeled UNVERIFIED and are not sent by `net_apply`. `net_map_cabling` assigns one rail per leaf from NIC order. That map is a planning heuristic, not a vendor bill of materials.
@@ -152,7 +150,7 @@ Pinned commands are the part that can be applied. PFC, ECN, DCQCN, and EVPN/VXLA
 PDU map:
 
 ```text
-/hpe-dell-hwops:pdu-map two feeds for a PowerScale F710, phase B rated 800 W
+/hw-spec-locator:pdu-map two feeds for a PowerScale F710, phase B rated 800 W
 ```
 
 `power_analyze` uses operator `loadWatts` when you set it, otherwise catalog `systemPlanningWatts` (887 W for the F710 at 35 C). Normal load is split across feeds and then across phases on that feed. Failover places the full load on each feed, then splits it across that feed's phases. Volts times amps is reported as VA.
@@ -267,11 +265,8 @@ node scripts/validate-plugin.mjs
 
 `claude plugin validate . --strict` is the upstream check when the Claude Code CLI is installed.
 
-## Publish later
+## Public repository
 
-1. Create the GitHub repository and push this branch.
-2. `claude plugin marketplace add <owner>/<repo>`
-3. `claude plugin install hpe-dell-hwops@kaname-hwops`
-4. Submission to Anthropic's plugin directory, if you want that listing, is a later human step. Nothing in this repo submits it.
+Install from https://github.com/KateAllen533/Hw-spec-locator with the commands in [Install](#install). Submission to Anthropic's plugin directory is not part of this repository.
 
-Confirm `git status` shows no `.env`, `*.pem`, or `*.key` before the first public push.
+Confirm `git status` shows no `.env`, `*.pem`, or `*.key` before pushing.

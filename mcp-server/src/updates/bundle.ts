@@ -15,7 +15,7 @@ export interface BundleManifest {
   formatVersion: "1";
   createdAt: string;
   pluginVersion: string;
-  producer: "hpe-dell-hwops";
+  producer: "hw-spec-locator";
   files: BundleFile[];
   unavailableSources: { id: string; url?: string; reason: string }[];
   signature: "absent" | "present";
@@ -52,7 +52,7 @@ export function exportBundle(options: {
     formatVersion: "1",
     createdAt: options.now ?? new Date().toISOString(),
     pluginVersion: "1.0.0",
-    producer: "hpe-dell-hwops",
+    producer: "hw-spec-locator",
     files: entries,
     unavailableSources: options.unavailableSources ?? [],
     signature: options.signingKeyPem ? "present" : "absent",

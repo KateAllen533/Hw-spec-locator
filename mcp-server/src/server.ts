@@ -153,7 +153,7 @@ export interface ServerDeps {
 export function createServer(deps: ServerDeps = {}): McpServer {
   const config = deps.config ?? loadConfig();
   const http = deps.http ?? guardedClient(config, nodeHttpClient());
-  const server = new McpServer({ name: "hpe-dell-hwops", version: "1.0.0" });
+  const server = new McpServer({ name: "hw-spec-locator", version: "1.0.0" });
 
   const catalog = () => loadCatalog(config.specDir);
   const cache = () => readCache(config.cachePath);

@@ -28670,7 +28670,7 @@ function loadConfig(env = process.env) {
     cachePath,
     mirrorDir,
     fetchMinIntervalMs: Number(env.HWOPS_FETCH_MIN_INTERVAL_MS ?? 1e3) || 1e3,
-    fetchUserAgent: env.HWOPS_FETCH_USER_AGENT?.trim() || "hpe-dell-hwops/1.0.0",
+    fetchUserAgent: env.HWOPS_FETCH_USER_AGENT?.trim() || "hw-spec-locator/1.0.0",
     offlineAllowHosts: (env.HWOPS_OFFLINE_ALLOW_HOSTS ?? "").split(",").map((s) => s.trim()).filter(Boolean),
     redfishUsername: env.HWOPS_REDFISH_USERNAME,
     redfishPassword: env.HWOPS_REDFISH_PASSWORD,
@@ -28747,7 +28747,7 @@ function nodeHttpClient() {
       {
         method: req.method ?? "GET",
         headers: {
-          "user-agent": "hpe-dell-hwops/1.0.0",
+          "user-agent": "hw-spec-locator/1.0.0",
           accept: "*/*",
           ...body ? { "content-length": String(body.length) } : {},
           ...req.headers
@@ -37618,7 +37618,7 @@ function renderConfig(intent) {
   }
   const pinned = renderPinned(intent);
   const header = [
-    `! hpe-dell-hwops review draft`,
+    `! hw-spec-locator review draft`,
     `! hostname ${intent.hostname} design ${intent.design} nos ${intent.nos}`,
     `! Pinned commands can be applied. Lines under UNVERIFIED are not vendor-certified syntax and are omitted from apply unless HWOPS_ALLOW_UNVERIFIED_APPLY=true.`
   ];
@@ -43154,7 +43154,7 @@ function exportBundle(options) {
     formatVersion: "1",
     createdAt: options.now ?? (/* @__PURE__ */ new Date()).toISOString(),
     pluginVersion: "1.0.0",
-    producer: "hpe-dell-hwops",
+    producer: "hw-spec-locator",
     files: entries,
     unavailableSources: options.unavailableSources ?? [],
     signature: options.signingKeyPem ? "present" : "absent"
@@ -43331,7 +43331,7 @@ var powerPlanSchema = external_exports.object({
 function createServer(deps = {}) {
   const config2 = deps.config ?? loadConfig();
   const http2 = deps.http ?? guardedClient(config2, nodeHttpClient());
-  const server = new McpServer({ name: "hpe-dell-hwops", version: "1.0.0" });
+  const server = new McpServer({ name: "hw-spec-locator", version: "1.0.0" });
   const catalog = () => loadCatalog(config2.specDir);
   const cache = () => readCache(config2.cachePath);
   server.registerTool(
@@ -43900,7 +43900,7 @@ if (!command || command === "--stdio") {
 `);
   if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") process.exitCode = 1;
 } else {
-  process.stderr.write(`hpe-dell-hwops commands: fetch, import-local, bundle, verify
+  process.stderr.write(`hw-spec-locator commands: fetch, import-local, bundle, verify
 `);
   process.exitCode = 2;
 }

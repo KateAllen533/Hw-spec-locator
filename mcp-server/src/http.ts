@@ -41,7 +41,7 @@ export function nodeHttpClient(): HttpClient {
         {
           method: req.method ?? "GET",
           headers: {
-            "user-agent": "hpe-dell-hwops/1.0.0",
+            "user-agent": "hw-spec-locator/1.0.0",
             accept: "*/*",
             ...(body ? { "content-length": String(body.length) } : {}),
             ...req.headers,

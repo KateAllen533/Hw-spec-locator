@@ -1,8 +1,8 @@
 {
-  "name": "hpe-dell-hwops-mcp",
+  "name": "hw-spec-locator-mcp",
   "version": "1.0.0",
   "private": true,
-  "description": "MCP server bundled with the hpe-dell-hwops Claude Code plugin.",
+  "description": "MCP server bundled with the hw-spec-locator Claude Code plugin.",
   "type": "module",
   "license": "MIT",
   "author": "Kaname Kanam",

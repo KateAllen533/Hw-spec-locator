@@ -31,7 +31,7 @@ export function renderConfig(intent: FabricIntent): RenderedConfig {
   }
   const pinned = renderPinned(intent);
   const header = [
-    `! hpe-dell-hwops review draft`,
+    `! hw-spec-locator review draft`,
     `! hostname ${intent.hostname} design ${intent.design} nos ${intent.nos}`,
     `! Pinned commands can be applied. Lines under UNVERIFIED are not vendor-certified syntax and are omitted from apply unless HWOPS_ALLOW_UNVERIFIED_APPLY=true.`,
   ];

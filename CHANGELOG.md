@@ -2,7 +2,7 @@
 
 ## 1.0.0
 
-First public-ready release of the HPE and Dell Hardware Operations plugin.
+First public release of the HW Spec Locator plugin (`hw-spec-locator` on marketplace `kaname-hwops`).
 
 - Sourced starter catalog for Dell AI Factory and HPE Private Cloud AI components, with verification on every claim.
 - Read-only Redfish, HPE OneView, and Dell OpenManage Enterprise inventory.
