@@ -4,6 +4,10 @@ Claude Code plugin for infrastructure engineers working on HPE and Dell hardware
 
 Author: **Kate Allen**. License: [MIT](LICENSE). Public repository: https://github.com/KateAllen533/Hw-spec-locator. Privacy: [PRIVACY.md](PRIVACY.md).
 
+## Disclaimer
+
+This is an independent, community-supported open-source project and a personal project of the author. It is not affiliated with, sponsored, endorsed, certified, or supported by Hewlett Packard Enterprise, Dell Technologies, NVIDIA, or any other vendor, and it does not represent the author's employer. Vendor names are trademarks of their owners, used only to describe compatibility. No specific hardware model is guaranteed. Specifications, firmware data, and generated network configuration may be incomplete or wrong; verify them with the vendor and test outside production before applying. Provided AS IS under the MIT License, with no warranty. The full text is in [DISCLAIMER.md](DISCLAIMER.md).
+
 The plugin name is `hw-spec-locator`. The marketplace name is `kaname-hwops`. This tree contains no credentials, tokens, private keys, or firmware binaries.
 
 ## What you can do

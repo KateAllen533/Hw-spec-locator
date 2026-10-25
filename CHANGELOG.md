@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+
+- Add DISCLAIMER.md and a Disclaimer section in the README. The plugin description notes that the project is independent. No change to server behavior.
+
 ## 1.1.2
 
 - Add PRIVACY.md. Link it from the README and from the plugin `homepage` field. No change to server behavior.
