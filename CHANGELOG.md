@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- Add PRIVACY.md. Link it from the README and from the plugin `homepage` field. No change to server behavior.
+
 ## 1.1.1
 
 - Keep every shipped file at or under 256 KiB by splitting the Zod vendor bundle into one chunk per module.

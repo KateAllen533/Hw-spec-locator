@@ -2,12 +2,13 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "hw-spec-locator",
   "displayName": "HW Spec Locator",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Specifications, Redfish and CMDB inventory, PDU power mapping, firmware-catalog ingestion, and AI-fabric switch config for HPE and Dell infrastructure.",
   "author": {
     "name": "Kaname Kanam"
   },
   "license": "MIT",
+  "homepage": "https://github.com/KateAllen533/Hw-spec-locator/blob/main/PRIVACY.md",
   "keywords": [
     "hpe",
     "dell",
