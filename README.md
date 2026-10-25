@@ -2,7 +2,7 @@
 
 Claude Code plugin for infrastructure engineers working on HPE and Dell hardware. It searches a sourced specification catalog, reads live inventory, normalizes assets for a CMDB, maps PDU power, ingests public firmware metadata, and drafts AI-fabric switch configuration.
 
-Author: **Kaname Kanam**. License: [MIT](LICENSE). Public repository: https://github.com/KateAllen533/Hw-spec-locator
+Author: **Kate Allen**. License: [MIT](LICENSE). Public repository: https://github.com/KateAllen533/Hw-spec-locator
 
 The plugin name is `hw-spec-locator`. The marketplace name is `kaname-hwops`. This tree contains no credentials, tokens, private keys, or firmware binaries. It is not submitted to Anthropic's plugin directory.
 
