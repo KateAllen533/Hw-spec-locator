@@ -54,9 +54,9 @@ export function netboxPlan(asset: CmdbAsset) {
 
 export async function syncServiceNow(config: HwopsConfig, http: HttpClient, assets: CmdbAsset[], confirm: string | undefined) {
   assertWriteAllowed(config, confirm, "ServiceNow CMDB sync");
-  if (!config.snowInstance) throw new Error("Set HWOPS_SNOW_INSTANCE.");
+  if (!config.snowInstance) throw new Error("Set the snow_instance plugin setting.");
   if (!config.snowToken && !(config.snowUsername && config.snowPassword)) {
-    throw new Error("Set HWOPS_SNOW_TOKEN or both HWOPS_SNOW_USERNAME and HWOPS_SNOW_PASSWORD.");
+    throw new Error("Set the snow_token plugin setting, or both snow_username and snow_password.");
   }
   const base = config.snowInstance.replace(/\/$/, "");
   const headers: Record<string, string> = { accept: "application/json", "content-type": "application/json" };
@@ -103,7 +103,7 @@ export async function syncServiceNow(config: HwopsConfig, http: HttpClient, asse
 
 export async function syncNetbox(config: HwopsConfig, http: HttpClient, assets: CmdbAsset[], confirm: string | undefined) {
   assertWriteAllowed(config, confirm, "NetBox sync");
-  if (!config.netboxUrl || !config.netboxToken) throw new Error("Set HWOPS_NETBOX_URL and HWOPS_NETBOX_TOKEN.");
+  if (!config.netboxUrl || !config.netboxToken) throw new Error("Set the netbox_url and netbox_token plugin settings.");
   const base = config.netboxUrl.replace(/\/$/, "");
   const headers = {
     accept: "application/json",

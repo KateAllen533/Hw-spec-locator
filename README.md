@@ -23,7 +23,7 @@ Numbers in the catalog are claims. `verified` cites a publisher source. `unverif
 - Node.js 20 or newer, for the bundled MCP server
 - Claude Code, to load the plugin
 
-The MCP server entry point is `mcp-server/dist/index.js`. It is built and committed, so installing the plugin does not require `npm install`.
+The MCP server entry point is `mcp-server/dist/index.js`. It is built and committed as readable JavaScript files, so installing the plugin does not require `npm install`.
 
 ## Install
 
@@ -72,39 +72,43 @@ MCP server name: `hwops` (shown as `plugin:hw-spec-locator:hwops`).
 
 ## Configuration
 
-Plugin settings (not secrets):
+Claude Code asks for plugin settings when the plugin is enabled. Passwords, tokens, the SNMP community, and bundle keys are sensitive settings: Claude Code stores them in the platform credential store and passes them to the MCP server. Do not put them in tool arguments, the chat, or a file the plugin reads.
 
-| Setting | Default | Effect |
+| Setting | Sensitive | Effect |
 | --- | --- | --- |
-| `offline_mode` | false | Sets `HWOPS_OFFLINE`. Refuses network calls |
-| `tls_verify` | true | Verifies TLS certificates on management APIs |
+| `offline_mode` | no | Default false. Refuses network calls |
+| `tls_verify` | no | Default true. Verifies TLS certificates on management APIs |
+| `redfish_username`, `redfish_password` | yes | iLO and iDRAC |
+| `oneview_host` | no | OneView base URL |
+| `oneview_username`, `oneview_password` | yes | OneView session |
+| `oneview_api_version` | no | Optional. Otherwise the server reads `/rest/version` |
+| `ome_host` | no | OpenManage Enterprise base URL |
+| `ome_username`, `ome_password` | yes | OpenManage Enterprise |
+| `snow_instance` | no | ServiceNow instance URL |
+| `snow_username`, `snow_password` | yes | ServiceNow basic authentication |
+| `snow_token` | yes | ServiceNow bearer token. Used instead of the username and password when set |
+| `netbox_url` | no | NetBox base URL |
+| `netbox_token` | yes | NetBox API token |
+| `snmp_community` | yes | SNMPv2c PDU identity. Never a tool argument |
+| `switch_username`, `switch_password` | yes | AOS-CX apply login |
+| `switch_token` | yes | Bearer token for `generic-https` apply |
+| `switch_apply_url` | no | `generic-https` apply target |
+| `bundle_signing_key` | yes | PEM private key text used at export. Not copied into the bundle |
+| `bundle_public_key` | yes | PEM public key text used at verify. A key inside the bundle is not trusted |
 
-Secrets and endpoints are environment variables. Do not put them in `plugin.json`, tool arguments, or the chat.
+Other runtime switches stay in the server process environment. They are not account credentials.
 
 | Variable | Used for |
 | --- | --- |
-| `HWOPS_REDFISH_USERNAME`, `HWOPS_REDFISH_PASSWORD` | iLO and iDRAC |
-| `HWOPS_ONEVIEW_HOST`, `HWOPS_ONEVIEW_USERNAME`, `HWOPS_ONEVIEW_PASSWORD` | OneView |
-| `HWOPS_ONEVIEW_API_VERSION` | Optional. Otherwise the server reads `/rest/version` |
-| `HWOPS_OME_HOST`, `HWOPS_OME_USERNAME`, `HWOPS_OME_PASSWORD` | OpenManage Enterprise |
-| `HWOPS_SNOW_INSTANCE`, `HWOPS_SNOW_USERNAME`, `HWOPS_SNOW_PASSWORD` or `HWOPS_SNOW_TOKEN` | ServiceNow |
-| `HWOPS_NETBOX_URL`, `HWOPS_NETBOX_TOKEN` | NetBox |
-| `HWOPS_SNMP_COMMUNITY` | SNMPv2c PDU identity. Never a tool argument |
-| `HWOPS_SWITCH_USERNAME`, `HWOPS_SWITCH_PASSWORD` or `HWOPS_SWITCH_TOKEN` | Switch apply |
-| `HWOPS_SWITCH_APPLY_URL` | `generic-https` apply target |
 | `HWOPS_AOSCX_API_VERSION` | AOS-CX REST version. Default `v10.13` |
 | `HWOPS_ALLOW_WRITE` | Must be exactly `true` before CMDB sync or switch apply |
 | `HWOPS_WRITE_CONFIRM` | Confirm string. Default `APPLY` |
 | `HWOPS_ALLOW_UNVERIFIED_APPLY` | Must be exactly `true` before an unverified draft may be considered. Unverified text is still not transmitted |
-| `HWOPS_OFFLINE` | `true` blocks public fetches and live APIs |
 | `HWOPS_OFFLINE_ALLOW_HOSTS` | Comma-separated hosts still allowed while offline |
 | `HWOPS_OFFLINE_BUNDLE` | Directory of a verified offline bundle. Replaces the data root |
-| `HWOPS_TLS_VERIFY` | `false` only for a lab processor with a private CA |
 | `HWOPS_SPEC_DIR`, `HWOPS_MIRROR_DIR`, `HWOPS_UPDATE_CACHE` | Override data locations |
 | `HWOPS_FETCH_MIN_INTERVAL_MS` | Per-host delay. Default `1000` |
-| `HWOPS_FETCH_USER_AGENT` | Default `hw-spec-locator/1.0.0` |
-| `HWOPS_BUNDLE_SIGNING_KEY` | PEM private key used at export. Not copied into the bundle |
-| `HWOPS_BUNDLE_PUBLIC_KEY` | PEM public key used at verify. A key inside the bundle is not trusted |
+| `HWOPS_FETCH_USER_AGENT` | Default `hw-spec-locator/` plus the plugin version |
 | `HWOPS_PLUGIN_ROOT` | Plugin root, if discovery fails |
 
 ## Examples
@@ -123,7 +127,7 @@ Live inventory:
 /hw-spec-locator:inventory ilo.example.internal redfish
 ```
 
-Set `HWOPS_REDFISH_USERNAME` and `HWOPS_REDFISH_PASSWORD` in the environment first.
+Set the `redfish_username` and `redfish_password` plugin settings first.
 
 CMDB preview, then a gated sync:
 
@@ -131,11 +135,7 @@ CMDB preview, then a gated sync:
 /hw-spec-locator:cmdb-sync preview netbox
 ```
 
-```bash
-export HWOPS_ALLOW_WRITE=true
-export HWOPS_NETBOX_URL=https://netbox.example.internal
-export HWOPS_NETBOX_TOKEN=...
-```
+Set `netbox_url` and `netbox_token` in the plugin settings, and set `HWOPS_ALLOW_WRITE=true` only for the process that should perform the write.
 
 Pass `confirm` as `APPLY` only after you intend the write. ServiceNow matches an existing serial and updates it; otherwise it creates `cmdb_ci_server`, `cmdb_ci_storage_device`, `cmdb_ci_ip_switch`, or `cmdb_ci_pdu`.
 
@@ -201,11 +201,6 @@ node mcp-server/dist/index.js verify --bundle /tmp/hwops-bundle
 
 Export on a connected machine:
 
-```bash
-export HWOPS_BUNDLE_SIGNING_KEY=/secure/hwops-bundle.key
-node mcp-server/dist/index.js bundle --out /media/hwops-bundle
-```
-
 Create the key pair outside the repository, for example:
 
 ```bash
@@ -213,18 +208,15 @@ openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out hwops-bundle.k
 openssl pkey -in hwops-bundle.key -pubout -out hwops-bundle.pub
 ```
 
-Do not commit either file. The bundle gets `manifest.json`, `SHA256SUMS`, and, when a key is set, `signature.sig` over the checksum file. The private key stays where `HWOPS_BUNDLE_SIGNING_KEY` points.
+Do not commit either file. Paste the private key PEM into the `bundle_signing_key` plugin setting and the public key PEM into `bundle_public_key`. The server does not open those files. The bundle gets `manifest.json`, `SHA256SUMS`, and, when the signing key is set, `signature.sig` over the checksum file.
 
-On the air-gapped site:
+On the air-gapped site, set `bundle_public_key`, then verify:
 
 ```bash
-export HWOPS_BUNDLE_PUBLIC_KEY=/secure/hwops-bundle.pub
 node mcp-server/dist/index.js verify --bundle /media/hwops-bundle
-export HWOPS_OFFLINE=true
-export HWOPS_OFFLINE_BUNDLE=/media/hwops-bundle
 ```
 
-Or set the plugin's offline mode. Spec search, config generation, power math, and CMDB export then use the bundle. Live Redfish, CMDB sync, and public fetches stay blocked unless a host is listed in `HWOPS_OFFLINE_ALLOW_HOSTS`.
+Set the plugin's offline mode and point `HWOPS_OFFLINE_BUNDLE` at the directory. Spec search, config generation, power math, and CMDB export then use the bundle. Live Redfish, CMDB sync, and public fetches stay blocked unless a host is listed in `HWOPS_OFFLINE_ALLOW_HOSTS`.
 
 Checksums detect a changed file that is still listed. A signature binds `SHA256SUMS`, so a coordinated edit of the manifest and the checksum file fails verification when the public key is present. If `signature.sig` exists and the public key is unset, verification fails as unchecked.
 

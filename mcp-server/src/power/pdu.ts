@@ -5,7 +5,7 @@ import { SNMP_OIDS, snmpGet, type UdpTransport } from "./snmp.js";
 
 export async function pullRedfishPdu(config: HwopsConfig, http: HttpClient, host: string): Promise<PowerPdu[]> {
   if (!config.redfishUsername || !config.redfishPassword) {
-    throw new Error("Set HWOPS_REDFISH_USERNAME and HWOPS_REDFISH_PASSWORD to read a Redfish PDU.");
+    throw new Error("Set the redfish_username and redfish_password plugin settings to read a Redfish PDU.");
   }
   const base = host.startsWith("http") ? host.replace(/\/$/, "") : `https://${host}`;
   const sessionUrl = `${base}/redfish/v1/SessionService/Sessions`;
@@ -63,7 +63,7 @@ export async function pullRedfishPdu(config: HwopsConfig, http: HttpClient, host
 }
 
 export async function pullSnmpPdu(config: HwopsConfig, host: string, transport?: UdpTransport) {
-  if (!config.snmpCommunity) throw new Error("Set HWOPS_SNMP_COMMUNITY. The community string is not accepted as a tool argument.");
+  if (!config.snmpCommunity) throw new Error("Set the snmp_community plugin setting. The community string is not accepted as a tool argument.");
   if (config.offline && !transport) {
     throw new Error("Air-gapped mode refuses live SNMP. Pass a captured response through tests, or unset HWOPS_OFFLINE on the management network.");
   }

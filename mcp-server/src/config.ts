@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -37,8 +37,8 @@ export interface HwopsConfig {
   switchToken?: string;
   switchApplyUrl?: string;
   aoscxApiVersion: string;
-  signingKeyPath?: string;
-  publicKeyPath?: string;
+  signingKeyPem?: string;
+  publicKeyPem?: string;
 }
 
 export class ConfigError extends Error {}
@@ -57,13 +57,27 @@ export class OfflineError extends Error {
   }
 }
 
+const unresolvedUserConfig = /^\$\{user_config\.[A-Za-z0-9_]+\}$/;
+
+export function pluginSetting(value: string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed || unresolvedUserConfig.test(trimmed)) return undefined;
+  return trimmed;
+}
+
 function flag(value: string | undefined, fallback: boolean): boolean {
-  if (value === undefined || value === "") return fallback;
-  const v = value.trim().toLowerCase();
-  if (v === "${user_config.offline_mode}" || v === "${user_config.tls_verify}") return fallback;
+  const resolved = pluginSetting(value);
+  if (resolved === undefined) return fallback;
+  const v = resolved.toLowerCase();
   if (["1", "true", "yes", "on"].includes(v)) return true;
   if (["0", "false", "no", "off"].includes(v)) return false;
   return fallback;
+}
+
+export function readPluginVersion(root: string): string {
+  const manifest = JSON.parse(readFileSync(path.join(root, ".claude-plugin", "plugin.json"), "utf8")) as { version?: string };
+  return manifest.version ?? "0.0.0";
 }
 
 export function findPluginRoot(start?: string): string {
@@ -106,34 +120,34 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): HwopsConfig {
     cachePath,
     mirrorDir,
     fetchMinIntervalMs: Number(env.HWOPS_FETCH_MIN_INTERVAL_MS ?? 1000) || 1000,
-    fetchUserAgent: env.HWOPS_FETCH_USER_AGENT?.trim() || "hw-spec-locator/1.0.0",
+    fetchUserAgent: pluginSetting(env.HWOPS_FETCH_USER_AGENT) || `hw-spec-locator/${readPluginVersion(pluginRoot)}`,
     offlineAllowHosts: (env.HWOPS_OFFLINE_ALLOW_HOSTS ?? "")
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
-    redfishUsername: env.HWOPS_REDFISH_USERNAME,
-    redfishPassword: env.HWOPS_REDFISH_PASSWORD,
-    oneviewHost: env.HWOPS_ONEVIEW_HOST,
-    oneviewUsername: env.HWOPS_ONEVIEW_USERNAME,
-    oneviewPassword: env.HWOPS_ONEVIEW_PASSWORD,
-    oneviewApiVersion: env.HWOPS_ONEVIEW_API_VERSION,
-    omeHost: env.HWOPS_OME_HOST,
-    omeUsername: env.HWOPS_OME_USERNAME,
-    omePassword: env.HWOPS_OME_PASSWORD,
-    snowInstance: env.HWOPS_SNOW_INSTANCE,
-    snowUsername: env.HWOPS_SNOW_USERNAME,
-    snowPassword: env.HWOPS_SNOW_PASSWORD,
-    snowToken: env.HWOPS_SNOW_TOKEN,
-    netboxUrl: env.HWOPS_NETBOX_URL,
-    netboxToken: env.HWOPS_NETBOX_TOKEN,
-    snmpCommunity: env.HWOPS_SNMP_COMMUNITY,
-    switchUsername: env.HWOPS_SWITCH_USERNAME,
-    switchPassword: env.HWOPS_SWITCH_PASSWORD,
-    switchToken: env.HWOPS_SWITCH_TOKEN,
-    switchApplyUrl: env.HWOPS_SWITCH_APPLY_URL,
-    aoscxApiVersion: env.HWOPS_AOSCX_API_VERSION?.trim() || "v10.13",
-    signingKeyPath: env.HWOPS_BUNDLE_SIGNING_KEY,
-    publicKeyPath: env.HWOPS_BUNDLE_PUBLIC_KEY,
+    redfishUsername: pluginSetting(env.HWOPS_REDFISH_USERNAME),
+    redfishPassword: pluginSetting(env.HWOPS_REDFISH_PASSWORD),
+    oneviewHost: pluginSetting(env.HWOPS_ONEVIEW_HOST),
+    oneviewUsername: pluginSetting(env.HWOPS_ONEVIEW_USERNAME),
+    oneviewPassword: pluginSetting(env.HWOPS_ONEVIEW_PASSWORD),
+    oneviewApiVersion: pluginSetting(env.HWOPS_ONEVIEW_API_VERSION),
+    omeHost: pluginSetting(env.HWOPS_OME_HOST),
+    omeUsername: pluginSetting(env.HWOPS_OME_USERNAME),
+    omePassword: pluginSetting(env.HWOPS_OME_PASSWORD),
+    snowInstance: pluginSetting(env.HWOPS_SNOW_INSTANCE),
+    snowUsername: pluginSetting(env.HWOPS_SNOW_USERNAME),
+    snowPassword: pluginSetting(env.HWOPS_SNOW_PASSWORD),
+    snowToken: pluginSetting(env.HWOPS_SNOW_TOKEN),
+    netboxUrl: pluginSetting(env.HWOPS_NETBOX_URL),
+    netboxToken: pluginSetting(env.HWOPS_NETBOX_TOKEN),
+    snmpCommunity: pluginSetting(env.HWOPS_SNMP_COMMUNITY),
+    switchUsername: pluginSetting(env.HWOPS_SWITCH_USERNAME),
+    switchPassword: pluginSetting(env.HWOPS_SWITCH_PASSWORD),
+    switchToken: pluginSetting(env.HWOPS_SWITCH_TOKEN),
+    switchApplyUrl: pluginSetting(env.HWOPS_SWITCH_APPLY_URL),
+    aoscxApiVersion: pluginSetting(env.HWOPS_AOSCX_API_VERSION) || "v10.13",
+    signingKeyPem: pluginSetting(env.HWOPS_BUNDLE_SIGNING_KEY),
+    publicKeyPem: pluginSetting(env.HWOPS_BUNDLE_PUBLIC_KEY),
   };
 }
 

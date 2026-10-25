@@ -51,7 +51,7 @@ export function exportBundle(options: {
     format: "hwops-offline-bundle",
     formatVersion: "1",
     createdAt: options.now ?? new Date().toISOString(),
-    pluginVersion: "1.0.0",
+    pluginVersion: readVersion(options.pluginRoot),
     producer: "hw-spec-locator",
     files: entries,
     unavailableSources: options.unavailableSources ?? [],
@@ -111,6 +111,15 @@ export function verifyBundle(bundleDir: string, publicKeyPem?: string): {
       ? "Bundle checksums match." + (signature === "valid" ? " Signature is valid." : " No signature was present.")
       : `Bundle verification failed. checksumsOk=${checksumsOk} signature=${signature}.`,
   };
+}
+
+function readVersion(pluginRoot: string): string {
+  try {
+    const manifest = JSON.parse(readFileSync(path.join(pluginRoot, ".claude-plugin", "plugin.json"), "utf8")) as { version?: string };
+    return manifest.version || "0.0.0";
+  } catch {
+    return "0.0.0";
+  }
 }
 
 function copyIfExists(src: string, dest: string): void {

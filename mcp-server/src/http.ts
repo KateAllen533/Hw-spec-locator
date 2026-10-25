@@ -2,7 +2,7 @@ import http from "node:http";
 import https from "node:https";
 import { URL } from "node:url";
 import zlib from "node:zlib";
-import { OfflineError, type HwopsConfig, assertOnline } from "./config.js";
+import { OfflineError, type HwopsConfig, assertOnline, findPluginRoot, readPluginVersion } from "./config.js";
 
 export interface HttpResponse {
   status: number;
@@ -41,7 +41,7 @@ export function nodeHttpClient(): HttpClient {
         {
           method: req.method ?? "GET",
           headers: {
-            "user-agent": "hw-spec-locator/1.0.0",
+            "user-agent": `hw-spec-locator/${readPluginVersion(findPluginRoot())}`,
             accept: "*/*",
             ...(body ? { "content-length": String(body.length) } : {}),
             ...req.headers,

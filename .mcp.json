@@ -6,7 +6,29 @@
       "env": {
         "HWOPS_PLUGIN_ROOT": "${CLAUDE_PLUGIN_ROOT}",
         "HWOPS_OFFLINE": "${user_config.offline_mode}",
-        "HWOPS_TLS_VERIFY": "${user_config.tls_verify}"
+        "HWOPS_TLS_VERIFY": "${user_config.tls_verify}",
+        "HWOPS_REDFISH_USERNAME": "${user_config.redfish_username}",
+        "HWOPS_REDFISH_PASSWORD": "${user_config.redfish_password}",
+        "HWOPS_ONEVIEW_HOST": "${user_config.oneview_host}",
+        "HWOPS_ONEVIEW_USERNAME": "${user_config.oneview_username}",
+        "HWOPS_ONEVIEW_PASSWORD": "${user_config.oneview_password}",
+        "HWOPS_ONEVIEW_API_VERSION": "${user_config.oneview_api_version}",
+        "HWOPS_OME_HOST": "${user_config.ome_host}",
+        "HWOPS_OME_USERNAME": "${user_config.ome_username}",
+        "HWOPS_OME_PASSWORD": "${user_config.ome_password}",
+        "HWOPS_SNOW_INSTANCE": "${user_config.snow_instance}",
+        "HWOPS_SNOW_USERNAME": "${user_config.snow_username}",
+        "HWOPS_SNOW_PASSWORD": "${user_config.snow_password}",
+        "HWOPS_SNOW_TOKEN": "${user_config.snow_token}",
+        "HWOPS_NETBOX_URL": "${user_config.netbox_url}",
+        "HWOPS_NETBOX_TOKEN": "${user_config.netbox_token}",
+        "HWOPS_SNMP_COMMUNITY": "${user_config.snmp_community}",
+        "HWOPS_SWITCH_USERNAME": "${user_config.switch_username}",
+        "HWOPS_SWITCH_PASSWORD": "${user_config.switch_password}",
+        "HWOPS_SWITCH_TOKEN": "${user_config.switch_token}",
+        "HWOPS_SWITCH_APPLY_URL": "${user_config.switch_apply_url}",
+        "HWOPS_BUNDLE_SIGNING_KEY": "${user_config.bundle_signing_key}",
+        "HWOPS_BUNDLE_PUBLIC_KEY": "${user_config.bundle_public_key}"
       }
     }
   }

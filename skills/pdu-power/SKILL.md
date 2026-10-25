@@ -11,5 +11,5 @@ Rules:
 - Leave `includeComponentTdp` false unless the user asks. When it is true, the result is labeled incomplete and is accelerator TDP only.
 - Normal load splits watts across distinct feeds, then across the distinct phases on that feed. Failover places the full device watts on each feed, then splits across that feed's phases. Say that this is an assumption, not a measurement.
 - Report findings by code: `unmapped-psu`, `unknown-outlet`, `single-psu`, `loss-of-feed-diversity`, `single-pdu`, `single-phase`, `phase-overload`, `phase-overload-failover`, `pdu-overload-failover`, `load-unknown`, `accelerator-tdp-only`.
-- SNMP uses `HWOPS_SNMP_COMMUNITY` from the environment. Do not pass a community string as a tool argument and do not default it.
+- SNMP uses the `snmp_community` plugin setting. Do not pass a community string as a tool argument and do not default it.
 - A phase capacity taken from volts times amps is VA. Do not apply a power factor that the user did not supply.

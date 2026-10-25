@@ -1,11 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { readFileSync } from "node:fs";
 import path from "node:path";
 import { z } from "zod";
 import { fromOme, fromOneView, fromRedfish, fromSpec, toCsv } from "./cmdb/normalize.js";
 import { netboxPlan, serviceNowPayload, serviceNowTable, syncNetbox, syncServiceNow } from "./cmdb/targets.js";
 import type { CmdbAsset } from "./cmdb/model.js";
-import { loadConfig, type HwopsConfig } from "./config.js";
+import { loadConfig, readPluginVersion, type HwopsConfig } from "./config.js";
 import { guardedClient, nodeHttpClient, type HttpClient } from "./http.js";
 import { listOmeDevices } from "./integrations/ome.js";
 import { listOneViewHardware } from "./integrations/oneview.js";
@@ -153,7 +152,7 @@ export interface ServerDeps {
 export function createServer(deps: ServerDeps = {}): McpServer {
   const config = deps.config ?? loadConfig();
   const http = deps.http ?? guardedClient(config, nodeHttpClient());
-  const server = new McpServer({ name: "hw-spec-locator", version: "1.0.0" });
+  const server = new McpServer({ name: "hw-spec-locator", version: readPluginVersion(config.pluginRoot) });
 
   const catalog = () => loadCatalog(config.specDir);
   const cache = () => readCache(config.cachePath);
@@ -277,14 +276,14 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "redfish_inventory",
     {
       title: "Redfish inventory",
-      description: "Read-only DMTF Redfish collection for an HPE iLO or Dell iDRAC: service root, system identity, serial, health, processors, memory, storage, NICs, and firmware inventory. Credentials come from HWOPS_REDFISH_USERNAME and HWOPS_REDFISH_PASSWORD.",
+      description: "Read-only DMTF Redfish collection for an HPE iLO or Dell iDRAC: service root, system identity, serial, health, processors, memory, storage, NICs, and firmware inventory. Credentials come from the redfish_username and redfish_password plugin settings.",
       inputSchema: z.object({ host: z.string() }),
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     async ({ host }) => {
       try {
         if (!config.redfishUsername || !config.redfishPassword) {
-          return asError(new Error("Set HWOPS_REDFISH_USERNAME and HWOPS_REDFISH_PASSWORD."));
+          return asError(new Error("Set the redfish_username and redfish_password plugin settings."));
         }
         const client = new RedfishClient(http, redfishBase(host), config.redfishUsername, config.redfishPassword, config);
         await client.login();
@@ -299,7 +298,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "oneview_inventory",
     {
       title: "HPE OneView inventory",
-      description: "Read-only HPE OneView server-hardware list. The API version is taken from /rest/version unless HWOPS_ONEVIEW_API_VERSION is set. Credentials are environment variables.",
+      description: "Read-only HPE OneView server-hardware list. The API version is taken from /rest/version unless the oneview_api_version plugin setting is set. Credentials are the oneview_username and oneview_password plugin settings.",
       inputSchema: z.object({ host: z.string().optional() }),
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
@@ -316,7 +315,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "ome_inventory",
     {
       title: "Dell OpenManage Enterprise inventory",
-      description: "Read-only Dell OpenManage Enterprise device list. Credentials are HWOPS_OME_USERNAME and HWOPS_OME_PASSWORD.",
+      description: "Read-only Dell OpenManage Enterprise device list. Credentials are the ome_username and ome_password plugin settings.",
       inputSchema: z.object({ host: z.string().optional() }),
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
@@ -454,7 +453,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "power_pull_pdu",
     {
       title: "Read a PDU",
-      description: "Read-only PDU pull. protocol redfish walks PowerEquipment PowerDistribution. protocol snmp performs an SNMPv2c GET of sysDescr and sysName using HWOPS_SNMP_COMMUNITY. It does not invent outlet readings.",
+      description: "Read-only PDU pull. protocol redfish walks PowerEquipment PowerDistribution. protocol snmp performs an SNMPv2c GET of sysDescr and sysName using the snmp_community plugin setting. It does not invent outlet readings.",
       inputSchema: z.object({ host: z.string(), protocol: z.enum(["redfish", "snmp"]) }),
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
@@ -553,7 +552,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "net_apply",
     {
       title: "Apply pinned switch configuration",
-      description: "Push pinned commands only. Refused unless HWOPS_ALLOW_WRITE=true and confirm matches. UNVERIFIED syntax is never sent. aos-cx-cli uses the AOS-CX REST login and /cli endpoint. generic-https POSTs pinned text to HWOPS_SWITCH_APPLY_URL.",
+      description: "Push pinned commands only. Refused unless HWOPS_ALLOW_WRITE=true and confirm matches. UNVERIFIED syntax is never sent. aos-cx-cli uses the AOS-CX REST login and /cli endpoint. generic-https POSTs pinned text to the switch_apply_url plugin setting.",
       inputSchema: fabricSchema.extend({
         confirm: z.string(),
         transport: z.enum(["aos-cx-cli", "generic-https"]),
@@ -648,18 +647,17 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "updates_bundle_export",
     {
       title: "Export an offline bundle",
-      description: "Copy specs, update cache, and the firmware mirror layout into a directory with manifest.json and SHA256SUMS. Adds signature.sig when HWOPS_BUNDLE_SIGNING_KEY points at a PEM private key. The private key is not written into the bundle.",
+      description: "Copy specs, update cache, and the firmware mirror layout into a directory with manifest.json and SHA256SUMS. Adds signature.sig when the bundle_signing_key plugin setting contains a PEM private key. The private key is not written into the bundle.",
       inputSchema: z.object({ outDir: z.string() }),
       annotations: { readOnlyHint: false, destructiveHint: false },
     },
     async ({ outDir }) => {
       try {
         const current = cache();
-        const signingKeyPem = config.signingKeyPath ? readFileSync(config.signingKeyPath, "utf8") : undefined;
         const manifest = exportBundle({
           pluginRoot: config.pluginRoot,
           outDir,
-          signingKeyPem,
+          signingKeyPem: config.signingKeyPem,
           unavailableSources: current.fetches
             .filter((fetch) => fetch.status === "unavailable")
             .map((fetch) => ({ id: fetch.sourceId, url: fetch.url, reason: fetch.reason })),
@@ -668,7 +666,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
           outDir,
           fileCount: manifest.files.length,
           signature: manifest.signature,
-          note: "Carry this directory into the air-gapped site and set HWOPS_OFFLINE=true plus HWOPS_OFFLINE_BUNDLE to the directory. Verify with the out-of-band public key.",
+          note: "Carry this directory into the air-gapped site and set offline mode plus HWOPS_OFFLINE_BUNDLE to the directory. Verify with the bundle_public_key plugin setting.",
         });
       } catch (error) {
         return asError(error);
@@ -680,14 +678,13 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "updates_bundle_verify",
     {
       title: "Verify an offline bundle",
-      description: "Recompute SHA-256 checksums. When signature.sig exists, HWOPS_BUNDLE_PUBLIC_KEY is required and the signature must validate. A public key shipped inside the bundle is not a trust anchor.",
+      description: "Recompute SHA-256 checksums. When signature.sig exists, the bundle_public_key plugin setting is required and the signature must validate. A public key shipped inside the bundle is not a trust anchor.",
       inputSchema: z.object({ bundleDir: z.string() }),
       annotations: { readOnlyHint: true },
     },
     async ({ bundleDir }) => {
       try {
-        const publicKey = config.publicKeyPath ? readFileSync(config.publicKeyPath, "utf8") : undefined;
-        const result = verifyBundle(bundleDir, publicKey);
+        const result = verifyBundle(bundleDir, config.publicKeyPem);
         if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") {
           return asError(new Error(`${result.message} ${result.mismatches.join("; ")}`.trim()));
         }
@@ -699,9 +696,4 @@ export function createServer(deps: ServerDeps = {}): McpServer {
   );
 
   return server;
-}
-
-export function readPluginVersion(root: string): string {
-  const manifest = JSON.parse(readFileSync(path.join(root, ".claude-plugin", "plugin.json"), "utf8")) as { version?: string };
-  return manifest.version ?? "0.0.0";
 }

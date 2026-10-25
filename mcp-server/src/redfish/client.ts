@@ -42,7 +42,7 @@ export class RedfishClient {
     if (this.token) headers["x-auth-token"] = this.token;
     else headers.authorization = basic(this.username, this.password);
     const res = await this.http({ method: "GET", url: this.url(path), headers, tlsVerify: this.config.tlsVerify });
-    if (res.status === 401) throw new RedfishError("Redfish authentication failed. Check HWOPS_REDFISH_USERNAME and HWOPS_REDFISH_PASSWORD.");
+    if (res.status === 401) throw new RedfishError("Redfish authentication failed. Check the redfish_username and redfish_password plugin settings.");
     if (res.status >= 400) throw new RedfishError(`Redfish GET ${path} returned HTTP ${res.status}.`);
     const parsed = JSON.parse(decodeBody(res).toString("utf8")) as unknown;
     const record = asRecord(parsed);

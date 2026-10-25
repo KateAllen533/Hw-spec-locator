@@ -5,9 +5,9 @@ export class OneViewError extends Error {}
 
 export async function listOneViewHardware(config: HwopsConfig, http: HttpClient, host?: string) {
   const base = normalize(host || config.oneviewHost);
-  if (!base) throw new OneViewError("Set HWOPS_ONEVIEW_HOST or pass host.");
+  if (!base) throw new OneViewError("Set the oneview_host plugin setting or pass host.");
   if (!config.oneviewUsername || !config.oneviewPassword) {
-    throw new OneViewError("Set HWOPS_ONEVIEW_USERNAME and HWOPS_ONEVIEW_PASSWORD.");
+    throw new OneViewError("Set the oneview_username and oneview_password plugin settings.");
   }
   assertOnline(config, `${base}/rest/version`);
   const versionRes = await http({
@@ -18,7 +18,7 @@ export async function listOneViewHardware(config: HwopsConfig, http: HttpClient,
   if (versionRes.status >= 400) throw new OneViewError(`OneView /rest/version returned HTTP ${versionRes.status}.`);
   const versionBody = JSON.parse(textBody(versionRes)) as { currentVersion?: number | string };
   const apiVersion = config.oneviewApiVersion || (versionBody.currentVersion !== undefined ? String(versionBody.currentVersion) : "");
-  if (!apiVersion) throw new OneViewError("OneView /rest/version did not include currentVersion. Set HWOPS_ONEVIEW_API_VERSION.");
+  if (!apiVersion) throw new OneViewError("OneView /rest/version did not include currentVersion. Set the oneview_api_version plugin setting.");
   const login = await http({
     method: "POST",
     url: `${base}/rest/login-sessions`,
@@ -26,7 +26,7 @@ export async function listOneViewHardware(config: HwopsConfig, http: HttpClient,
     body: JSON.stringify({ userName: config.oneviewUsername, password: config.oneviewPassword }),
     tlsVerify: config.tlsVerify,
   });
-  if (login.status >= 400) throw new OneViewError("OneView login failed. Check HWOPS_ONEVIEW_USERNAME and HWOPS_ONEVIEW_PASSWORD.");
+  if (login.status >= 400) throw new OneViewError("OneView login failed. Check the oneview_username and oneview_password plugin settings.");
   const session = JSON.parse(textBody(login)) as { sessionID?: string };
   if (!session.sessionID) throw new OneViewError("OneView login response did not include sessionID.");
   const hardware = await http({

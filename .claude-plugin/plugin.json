@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "hw-spec-locator",
   "displayName": "HW Spec Locator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Specifications, Redfish and CMDB inventory, PDU power mapping, firmware-catalog ingestion, and AI-fabric switch config for HPE and Dell infrastructure.",
   "author": {
     "name": "Kaname Kanam"
@@ -34,6 +34,132 @@
       "title": "Verify TLS certificates",
       "description": "Verify TLS certificates for Redfish, OneView, OpenManage Enterprise, CMDB, and switch APIs. Leave enabled unless a lab management processor uses a private CA.",
       "default": true
+    },
+    "redfish_username": {
+      "type": "string",
+      "title": "iLO and iDRAC username",
+      "description": "Username for HPE iLO and Dell iDRAC Redfish sessions.",
+      "sensitive": true
+    },
+    "redfish_password": {
+      "type": "string",
+      "title": "iLO and iDRAC password",
+      "description": "Password for HPE iLO and Dell iDRAC Redfish sessions.",
+      "sensitive": true
+    },
+    "oneview_host": {
+      "type": "string",
+      "title": "HPE OneView host",
+      "description": "OneView appliance base URL, such as https://oneview.example.internal."
+    },
+    "oneview_username": {
+      "type": "string",
+      "title": "HPE OneView username",
+      "description": "Username for the OneView REST session.",
+      "sensitive": true
+    },
+    "oneview_password": {
+      "type": "string",
+      "title": "HPE OneView password",
+      "description": "Password for the OneView REST session.",
+      "sensitive": true
+    },
+    "oneview_api_version": {
+      "type": "string",
+      "title": "HPE OneView API version",
+      "description": "Optional X-API-Version. When empty, the server reads currentVersion from /rest/version."
+    },
+    "ome_host": {
+      "type": "string",
+      "title": "OpenManage Enterprise host",
+      "description": "Dell OpenManage Enterprise base URL, such as https://ome.example.internal."
+    },
+    "ome_username": {
+      "type": "string",
+      "title": "OpenManage Enterprise username",
+      "description": "Username for the OpenManage Enterprise API session.",
+      "sensitive": true
+    },
+    "ome_password": {
+      "type": "string",
+      "title": "OpenManage Enterprise password",
+      "description": "Password for the OpenManage Enterprise API session.",
+      "sensitive": true
+    },
+    "snow_instance": {
+      "type": "string",
+      "title": "ServiceNow instance",
+      "description": "ServiceNow instance URL, such as https://example.service-now.com."
+    },
+    "snow_username": {
+      "type": "string",
+      "title": "ServiceNow username",
+      "description": "ServiceNow user for basic authentication. Leave empty when snow_token is set.",
+      "sensitive": true
+    },
+    "snow_password": {
+      "type": "string",
+      "title": "ServiceNow password",
+      "description": "ServiceNow password for basic authentication. Leave empty when snow_token is set.",
+      "sensitive": true
+    },
+    "snow_token": {
+      "type": "string",
+      "title": "ServiceNow token",
+      "description": "ServiceNow bearer token. Used instead of snow_username and snow_password when set.",
+      "sensitive": true
+    },
+    "netbox_url": {
+      "type": "string",
+      "title": "NetBox URL",
+      "description": "NetBox base URL, such as https://netbox.example.internal."
+    },
+    "netbox_token": {
+      "type": "string",
+      "title": "NetBox token",
+      "description": "NetBox API token.",
+      "sensitive": true
+    },
+    "snmp_community": {
+      "type": "string",
+      "title": "SNMP community",
+      "description": "SNMPv2c community for a read of PDU sysDescr and sysName. Never passed as a tool argument.",
+      "sensitive": true
+    },
+    "switch_username": {
+      "type": "string",
+      "title": "Switch username",
+      "description": "Username for an AOS-CX REST login when applying pinned commands.",
+      "sensitive": true
+    },
+    "switch_password": {
+      "type": "string",
+      "title": "Switch password",
+      "description": "Password for an AOS-CX REST login when applying pinned commands.",
+      "sensitive": true
+    },
+    "switch_token": {
+      "type": "string",
+      "title": "Switch apply token",
+      "description": "Bearer token for the generic-https switch apply target.",
+      "sensitive": true
+    },
+    "switch_apply_url": {
+      "type": "string",
+      "title": "Switch apply URL",
+      "description": "HTTPS URL that receives pinned commands for the generic-https transport."
+    },
+    "bundle_signing_key": {
+      "type": "string",
+      "title": "Offline bundle signing key",
+      "description": "PEM private key used to sign an offline bundle. Paste the key itself. The server does not read a key file, and the key is not copied into the bundle.",
+      "sensitive": true
+    },
+    "bundle_public_key": {
+      "type": "string",
+      "title": "Offline bundle public key",
+      "description": "PEM public key used to verify an offline bundle signature. A key shipped inside the bundle is not trusted.",
+      "sensitive": true
     }
   }
 }

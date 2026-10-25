@@ -5,8 +5,8 @@ export class OmeError extends Error {}
 
 export async function listOmeDevices(config: HwopsConfig, http: HttpClient, host?: string) {
   const base = normalize(host || config.omeHost);
-  if (!base) throw new OmeError("Set HWOPS_OME_HOST or pass host.");
-  if (!config.omeUsername || !config.omePassword) throw new OmeError("Set HWOPS_OME_USERNAME and HWOPS_OME_PASSWORD.");
+  if (!base) throw new OmeError("Set the ome_host plugin setting or pass host.");
+  if (!config.omeUsername || !config.omePassword) throw new OmeError("Set the ome_username and ome_password plugin settings.");
   const sessionUrl = `${base}/api/SessionService/Sessions`;
   assertOnline(config, sessionUrl);
   const login = await http({
@@ -16,7 +16,7 @@ export async function listOmeDevices(config: HwopsConfig, http: HttpClient, host
     body: JSON.stringify({ UserName: config.omeUsername, Password: config.omePassword, SessionType: "API" }),
     tlsVerify: config.tlsVerify,
   });
-  if (login.status >= 400) throw new OmeError("OpenManage Enterprise login failed. Check HWOPS_OME_USERNAME and HWOPS_OME_PASSWORD.");
+  if (login.status >= 400) throw new OmeError("OpenManage Enterprise login failed. Check the ome_username and ome_password plugin settings.");
   let token: string | undefined = login.headers["x-auth-token"];
   if (!token) {
     try {

@@ -1,6 +1,6 @@
 {
   "name": "hw-spec-locator-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "MCP server bundled with the hw-spec-locator Claude Code plugin.",
   "type": "module",
@@ -12,7 +12,7 @@
   "scripts": {
     "test": "tsx --test test/**/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.js --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\""
+    "build": "node scripts/build.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
@@ -20,9 +20,13 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/node": "^22.15.0",
     "ajv": "^8.20.0",
     "esbuild": "^0.25.0",
+    "rollup": "^4.65.0",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }

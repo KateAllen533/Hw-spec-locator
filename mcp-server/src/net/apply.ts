@@ -21,12 +21,12 @@ export async function applyRendered(options: {
     if (options.rendered.nos !== "aos-cx") throw new Error("aos-cx-cli transport only accepts an aos-cx draft.");
     if (!options.host) throw new Error("host is required for aos-cx-cli.");
     if (!options.config.switchUsername || !options.config.switchPassword) {
-      throw new Error("Set HWOPS_SWITCH_USERNAME and HWOPS_SWITCH_PASSWORD.");
+      throw new Error("Set the switch_username and switch_password plugin settings.");
     }
     return applyAosCx(options.config, options.http, options.host, options.rendered.pinnedCommands);
   }
   if (!options.config.switchApplyUrl || !options.config.switchToken) {
-    throw new Error("generic-https requires HWOPS_SWITCH_APPLY_URL and HWOPS_SWITCH_TOKEN.");
+    throw new Error("generic-https requires the switch_apply_url and switch_token plugin settings.");
   }
   assertOnline(options.config, options.config.switchApplyUrl);
   const res = await options.http({
