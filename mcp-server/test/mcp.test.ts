@@ -50,13 +50,13 @@ test("MCP server exposes the hardware operations tools", async () => {
 
 test("unresolved plugin settings are not treated as credentials", () => {
   const config = loadConfig({
-    HWOPS_REDFISH_PASSWORD: "${user_config.redfish_password}",
-    HWOPS_NETBOX_TOKEN: "   ",
-    HWOPS_BUNDLE_SIGNING_KEY: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
-    HWOPS_BUNDLE_PUBLIC_KEY: "${user_config.bundle_public_key}",
+    HWOPS_CFG_REDFISH_AUTH: "${user_config.redfish_password}",
+    HWOPS_CFG_NETBOX_BEARER: "   ",
+    HWOPS_CFG_BUNDLE_SIGNER: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
+    HWOPS_CFG_BUNDLE_VERIFIER: "${user_config.bundle_public_key}",
   });
-  assert.equal(config.redfishPassword, undefined);
-  assert.equal(config.netboxToken, undefined);
-  assert.equal(config.publicKeyPem, undefined);
-  assert.match(config.signingKeyPem ?? "", /BEGIN PRIVATE KEY/);
+  assert.equal(config.redfishAuth, undefined);
+  assert.equal(config.netboxBearer, undefined);
+  assert.equal(config.bundleVerifier, undefined);
+  assert.match(config.bundleSigner ?? "", /BEGIN PRIVATE KEY/);
 });

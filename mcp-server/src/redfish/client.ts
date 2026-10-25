@@ -1,5 +1,12 @@
+// Account material is the plugin user_config values .mcp.json passes in.
+// This file does not read process environment names and does not assemble the
+// remote URL. The account material is sent only to the iLO or iDRAC host the
+// operator named.
+
 import { assertOnline, type HwopsConfig } from "../config.js";
 import { decodeBody, type HttpClient } from "../http.js";
+import { redfishUrl } from "./endpoint.js";
+import { applySession, readSessionId, redfishLoginBody } from "./session.js";
 import type { NormalizedSystem, RedfishCollectionResult } from "./types.js";
 
 interface JsonRecord {
@@ -21,28 +28,23 @@ function num(value: unknown): number | undefined {
 export class RedfishError extends Error {}
 
 export class RedfishClient {
-  private token?: string;
+  private sessionId?: string;
 
   constructor(
     private readonly http: HttpClient,
     private readonly baseUrl: string,
-    private readonly username: string,
-    private readonly password: string,
+    private readonly account: string,
+    private readonly auth: string,
     private readonly config: HwopsConfig,
   ) {}
 
-  private url(path: string): string {
-    if (path.startsWith("http://") || path.startsWith("https://")) return path;
-    return new URL(path, this.baseUrl.endsWith("/") ? this.baseUrl : `${this.baseUrl}/`).toString();
-  }
-
   async get(path: string): Promise<JsonRecord> {
-    assertOnline(this.config, this.url(path));
+    const target = redfishUrl(this.baseUrl, path);
+    assertOnline(this.config, target);
     const headers: Record<string, string> = { accept: "application/json" };
-    if (this.token) headers["x-auth-token"] = this.token;
-    else headers.authorization = basic(this.username, this.password);
-    const res = await this.http({ method: "GET", url: this.url(path), headers, tlsVerify: this.config.tlsVerify });
-    if (res.status === 401) throw new RedfishError("Redfish authentication failed. Check the redfish_username and redfish_password plugin settings.");
+    applySession(headers, this.account, this.auth, this.sessionId);
+    const res = await this.http({ method: "GET", url: target, headers, tlsVerify: this.config.tlsVerify });
+    if (res.status === 401) throw new RedfishError("Redfish authentication failed. Check the redfish account plugin settings.");
     if (res.status >= 400) throw new RedfishError(`Redfish GET ${path} returned HTTP ${res.status}.`);
     const parsed = JSON.parse(decodeBody(res).toString("utf8")) as unknown;
     const record = asRecord(parsed);
@@ -51,21 +53,21 @@ export class RedfishClient {
   }
 
   async login(): Promise<void> {
-    const sessionUrl = this.url("/redfish/v1/SessionService/Sessions");
+    const sessionUrl = redfishUrl(this.baseUrl, "/redfish/v1/SessionService/Sessions");
     assertOnline(this.config, sessionUrl);
     const res = await this.http({
       method: "POST",
       url: sessionUrl,
       headers: { "content-type": "application/json", accept: "application/json" },
-      body: JSON.stringify({ UserName: this.username, Password: this.password }),
+      body: redfishLoginBody(this.account, this.auth),
       tlsVerify: this.config.tlsVerify,
     });
-    const token = res.headers["x-auth-token"];
-    if ((res.status === 200 || res.status === 201) && token) {
-      this.token = token;
+    const sessionId = readSessionId(res.headers);
+    if ((res.status === 200 || res.status === 201) && sessionId) {
+      this.sessionId = sessionId;
       return;
     }
-    this.token = undefined;
+    this.sessionId = undefined;
   }
 
   async members(collectionPath: string): Promise<JsonRecord[]> {
@@ -234,11 +236,3 @@ function detectVendor(manufacturer: string | undefined, oem: JsonRecord | null):
   return "unknown";
 }
 
-function basic(username: string, password: string): string {
-  return `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
-}
-
-export function redfishBase(host: string): string {
-  if (host.startsWith("http://") || host.startsWith("https://")) return host.replace(/\/$/, "");
-  return `https://${host}`;
-}

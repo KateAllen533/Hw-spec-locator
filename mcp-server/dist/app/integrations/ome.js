@@ -1,35 +1,37 @@
 import { a as assertOnline } from '../config.js';
 import { t as textBody } from '../http.js';
+import { m as managementBase } from '../remote/base-url.js';
+import { o as omeLoginBody, O as OME_SESSION_HEADER } from './ome-auth.js';
 
 class OmeError extends Error {
 }
 async function listOmeDevices(config, http, host) {
   const base = normalize(host || config.omeHost);
-  if (!base) throw new OmeError("Set the ome_host plugin setting or pass host.");
-  if (!config.omeUsername || !config.omePassword) throw new OmeError("Set the ome_username and ome_password plugin settings.");
+  if (!base) throw new OmeError("Provide the ome_host plugin setting or pass host.");
+  if (!config.omeUser || !config.omeAuth) throw new OmeError("Provide the ome_username and ome_password plugin settings.");
   const sessionUrl = `${base}/api/SessionService/Sessions`;
   assertOnline(config, sessionUrl);
   const login = await http({
     method: "POST",
     url: sessionUrl,
     headers: { "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ UserName: config.omeUsername, Password: config.omePassword, SessionType: "API" }),
+    body: omeLoginBody(config.omeUser, config.omeAuth),
     tlsVerify: config.tlsVerify
   });
   if (login.status >= 400) throw new OmeError("OpenManage Enterprise login failed. Check the ome_username and ome_password plugin settings.");
-  let token = login.headers["x-auth-token"];
-  if (!token) {
+  let sessionId = login.headers[OME_SESSION_HEADER];
+  if (!sessionId) {
     try {
       const body2 = JSON.parse(textBody(login));
-      if (body2.Id) token = body2.Id;
+      if (body2.Id) sessionId = body2.Id;
     } catch {
-      token = void 0;
+      sessionId = void 0;
     }
   }
-  if (!token) throw new OmeError("OpenManage Enterprise login did not return an X-Auth-Token.");
+  if (!sessionId) throw new OmeError("OpenManage Enterprise login did not return a session id.");
   const devicesRes = await http({
     url: `${base}/api/DeviceService/Devices`,
-    headers: { accept: "application/json", "x-auth-token": token },
+    headers: { accept: "application/json", [OME_SESSION_HEADER]: sessionId },
     tlsVerify: config.tlsVerify
   });
   if (devicesRes.status >= 400) throw new OmeError(`OpenManage Enterprise devices returned HTTP ${devicesRes.status}.`);
@@ -51,9 +53,7 @@ async function listOmeDevices(config, http, host) {
 }
 function normalize(host) {
   if (!host) return null;
-  const trimmed = host.replace(/\/$/, "");
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
-  return `https://${trimmed}`;
+  return managementBase(host);
 }
 
 export { listOmeDevices as l };

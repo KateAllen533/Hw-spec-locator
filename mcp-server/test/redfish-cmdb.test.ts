@@ -59,7 +59,7 @@ test("iLO Redfish inventory normalizes into a CMDB server", async () => {
     if (!route) return { status: 404, body: { missing: path } };
     return route;
   });
-  const config = testConfig({ redfishUsername: "ops", redfishPassword: "secret" });
+  const config = testConfig({ redfishUser: "ops", redfishAuth: "secret" });
   const client = new RedfishClient(http, "https://ilo.example", "ops", "secret", config);
   await client.login();
   const collected = await client.collect();
@@ -95,7 +95,7 @@ test("iDRAC system id is discovered from the collection", async () => {
     if (path.includes("FirmwareInventory")) return { body: { Members: [{ Id: "BIOS", Name: "BIOS", Version: "1.12.1" }] } };
     return { body: { Members: [] } };
   });
-  const config = testConfig({ redfishUsername: "root", redfishPassword: "secret" });
+  const config = testConfig({ redfishUser: "root", redfishAuth: "secret" });
   const client = new RedfishClient(http, "https://idrac.example", "root", "secret", config);
   const collected = await client.collect();
   assert.equal(collected.systems[0].vendor, "Dell");
@@ -118,10 +118,10 @@ test("OneView and OpenManage Enterprise use mocked sessions", async () => {
     }
     return { status: 404, body: {} };
   });
-  const oneview = await listOneViewHardware(testConfig({ oneviewHost: "oneview.example", oneviewUsername: "a", oneviewPassword: "b" }), http, "oneview.example");
+  const oneview = await listOneViewHardware(testConfig({ oneviewHost: "oneview.example", oneviewUser: "a", oneviewAuth: "b" }), http, "oneview.example");
   assert.equal(oneview.apiVersion, "6400");
   assert.equal(oneview.servers[0].serialNumber, "SYN1");
-  const ome = await listOmeDevices(testConfig({ omeHost: "ome.example", omeUsername: "a", omePassword: "b" }), http);
+  const ome = await listOmeDevices(testConfig({ omeHost: "ome.example", omeUser: "a", omeAuth: "b" }), http);
   assert.equal(ome.devices[0].identifier, "ABC1234");
 });
 
@@ -146,7 +146,7 @@ test("CMDB sync is refused unless the write gate is open", async () => {
   });
   await assert.rejects(() => syncServiceNow(testConfig({ allowWrite: false }), http, [asset], "APPLY"), WriteDisabledError);
   await assert.rejects(
-    () => syncServiceNow(testConfig({ allowWrite: true, snowInstance: "https://example.service-now.com", snowToken: "t" }), http, [asset], "NOPE"),
+    () => syncServiceNow(testConfig({ allowWrite: true, snowInstance: "https://example.service-now.com", snowBearer: "t" }), http, [asset], "NOPE"),
     /confirm/i,
   );
 });
@@ -163,7 +163,7 @@ test("ServiceNow sync patches an existing serial", async () => {
     {},
   );
   const result = await syncServiceNow(
-    testConfig({ allowWrite: true, snowInstance: "https://example.service-now.com", snowToken: "token" }),
+    testConfig({ allowWrite: true, snowInstance: "https://example.service-now.com", snowBearer: "token" }),
     http,
     [asset],
     "APPLY",

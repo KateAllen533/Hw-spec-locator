@@ -1,4 +1,4 @@
-import { w as ZodFirstPartyTypeKind } from './zod.js';
+import { Z as ZodFirstPartyTypeKind } from './zod/v3/types.js';
 
 const ignoreOverride = Symbol("Let zodToJsonSchema decide on which parser to use");
 const defaultOptions = {

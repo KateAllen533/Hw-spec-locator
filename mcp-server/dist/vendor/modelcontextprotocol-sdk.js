@@ -1,8 +1,12 @@
 import process from 'node:process';
-import { u as union, s as string, n as number, l as looseObject, o as object, a as literal, b as unknown, _ as _enum, c as array, i as intersection, r as record, d as boolean, p as preprocess, e as optional, f as datetime, g as discriminatedUnion, h as custom, j as _null, k as safeParseAsync$1, m as object$1, q as objectType, t as safeParse$1, v as toJSONSchema, Z as ZodOptional } from './zod.js';
+import { s as safeParseAsync$1, m as safeParse$1 } from './zod/v4/core/parse.js';
+import { o as object$1 } from './zod/v4/mini/schemas.js';
+import { o as objectType } from './zod/v3/types.js';
+import { u as union, s as string, n as number, l as looseObject, o as object, a as literal, b as unknown, _ as _enum, c as array, i as intersection, r as record, d as boolean, p as preprocess, e as optional, f as discriminatedUnion, g as custom, h as _null, j as ZodOptional } from './zod/v4/classic/schemas.js';
+import { d as datetime } from './zod/v4/classic/iso.js';
 import { z as zodToJsonSchema } from './zod-to-json-schema.js';
-import { A as Ajv } from './ajv.js';
-import { _ as _addFormats } from './ajv-formats.js';
+import { y as toJSONSchema } from './zod/v4/core/json-schema-processors.js';
+import { A as Ajv } from '../app/shims/ajv.js';
 
 const LATEST_PROTOCOL_VERSION = '2025-11-25';
 const SUPPORTED_PROTOCOL_VERSIONS = [LATEST_PROTOCOL_VERSION, '2025-06-18', '2025-03-26', '2024-11-05', '2024-10-07'];
@@ -3579,8 +3583,6 @@ function createDefaultAjvInstance() {
         validateSchema: false,
         allErrors: true
     });
-    const addFormats = _addFormats;
-    addFormats(ajv);
     return ajv;
 }
 /**

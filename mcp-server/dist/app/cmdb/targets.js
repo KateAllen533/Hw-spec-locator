@@ -1,6 +1,7 @@
 import { b as assertWriteAllowed, a as assertOnline } from '../config.js';
 import { t as textBody } from '../http.js';
 import { s as slug } from './model.js';
+import { s as serviceNowAuthorization, n as netboxAuthorization } from './wire-auth.js';
 
 function serviceNowTable(asset) {
   if (asset.category === "storage") return "cmdb_ci_storage_device";
@@ -50,14 +51,16 @@ function netboxPlan(asset) {
 }
 async function syncServiceNow(config, http, assets, confirm) {
   assertWriteAllowed(config, confirm, "ServiceNow CMDB sync");
-  if (!config.snowInstance) throw new Error("Set the snow_instance plugin setting.");
-  if (!config.snowToken && !(config.snowUsername && config.snowPassword)) {
-    throw new Error("Set the snow_token plugin setting, or both snow_username and snow_password.");
+  if (!config.snowInstance) throw new Error("Provide the snow_instance plugin setting.");
+  if (!config.snowBearer && !(config.snowUser && config.snowAuth)) {
+    throw new Error("Provide the snow_token plugin setting, or both snow_username and snow_password.");
   }
   const base = config.snowInstance.replace(/\/$/, "");
-  const headers = { accept: "application/json", "content-type": "application/json" };
-  if (config.snowToken) headers.authorization = `Bearer ${config.snowToken}`;
-  else headers.authorization = `Basic ${Buffer.from(`${config.snowUsername}:${config.snowPassword}`).toString("base64")}`;
+  const headers = {
+    accept: "application/json",
+    "content-type": "application/json",
+    authorization: serviceNowAuthorization(config.snowBearer, config.snowUser, config.snowAuth)
+  };
   const results = [];
   for (const asset of assets) {
     const table = serviceNowTable(asset);
@@ -98,12 +101,12 @@ async function syncServiceNow(config, http, assets, confirm) {
 }
 async function syncNetbox(config, http, assets, confirm) {
   assertWriteAllowed(config, confirm, "NetBox sync");
-  if (!config.netboxUrl || !config.netboxToken) throw new Error("Set the netbox_url and netbox_token plugin settings.");
+  if (!config.netboxUrl || !config.netboxBearer) throw new Error("Provide the netbox_url and netbox_token plugin settings.");
   const base = config.netboxUrl.replace(/\/$/, "");
   const headers = {
     accept: "application/json",
     "content-type": "application/json",
-    authorization: `Token ${config.netboxToken}`
+    authorization: netboxAuthorization(config.netboxBearer)
   };
   const results = [];
   for (const asset of assets) {

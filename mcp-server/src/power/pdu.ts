@@ -1,37 +1,38 @@
 import { assertOnline, type HwopsConfig } from "../config.js";
 import { textBody, type HttpClient } from "../http.js";
+import { redfishBase, redfishUrl } from "../redfish/endpoint.js";
+import { applySession, readSessionId, redfishLoginBody } from "../redfish/session.js";
 import type { PowerPdu } from "./model.js";
 import { SNMP_OIDS, snmpGet, type UdpTransport } from "./snmp.js";
 
 export async function pullRedfishPdu(config: HwopsConfig, http: HttpClient, host: string): Promise<PowerPdu[]> {
-  if (!config.redfishUsername || !config.redfishPassword) {
-    throw new Error("Set the redfish_username and redfish_password plugin settings to read a Redfish PDU.");
+  if (!config.redfishUser || !config.redfishAuth) {
+    throw new Error("Provide the redfish_username and redfish_password plugin settings to read a Redfish PDU.");
   }
-  const base = host.startsWith("http") ? host.replace(/\/$/, "") : `https://${host}`;
-  const sessionUrl = `${base}/redfish/v1/SessionService/Sessions`;
+  const base = redfishBase(host);
+  const sessionUrl = redfishUrl(base, "/redfish/v1/SessionService/Sessions");
   assertOnline(config, sessionUrl);
   const login = await http({
     method: "POST",
     url: sessionUrl,
     headers: { "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ UserName: config.redfishUsername, Password: config.redfishPassword }),
+    body: redfishLoginBody(config.redfishUser, config.redfishAuth),
     tlsVerify: config.tlsVerify,
   });
   const headers: Record<string, string> = { accept: "application/json" };
-  if (login.headers["x-auth-token"]) headers["x-auth-token"] = login.headers["x-auth-token"];
-  else headers.authorization = `Basic ${Buffer.from(`${config.redfishUsername}:${config.redfishPassword}`).toString("base64")}`;
-  const collectionUrl = `${base}/redfish/v1/PowerEquipment/PowerDistribution`;
+  applySession(headers, config.redfishUser, config.redfishAuth, readSessionId(login.headers));
+  const collectionUrl = redfishUrl(base, "/redfish/v1/PowerEquipment/PowerDistribution");
   const collection = await getJson(http, config, collectionUrl, headers);
   const members = Array.isArray(collection.Members) ? collection.Members : [];
   const pdus: PowerPdu[] = [];
   for (const member of members) {
     const id = (member as { "@odata.id"?: string })["@odata.id"];
     if (!id) continue;
-    const pdu = await getJson(http, config, new URL(id, `${base}/`).toString(), headers);
+    const pdu = await getJson(http, config, redfishUrl(base, id), headers);
     const branchesUrl = (pdu.Branches as { "@odata.id"?: string } | undefined)?.["@odata.id"];
     const outletsUrl = (pdu.Outlets as { "@odata.id"?: string } | undefined)?.["@odata.id"];
-    const branches = branchesUrl ? await membersOf(http, config, new URL(branchesUrl, `${base}/`).toString(), headers) : [];
-    const outlets = outletsUrl ? await membersOf(http, config, new URL(outletsUrl, `${base}/`).toString(), headers) : [];
+    const branches = branchesUrl ? await membersOf(http, config, redfishUrl(base, branchesUrl), headers) : [];
+    const outlets = outletsUrl ? await membersOf(http, config, redfishUrl(base, outletsUrl), headers) : [];
     const phases = branches.map((branch, index) => ({
       id: String(branch.Id ?? `branch-${index + 1}`),
       voltage: reading(branch.NominalVoltage),
@@ -63,13 +64,13 @@ export async function pullRedfishPdu(config: HwopsConfig, http: HttpClient, host
 }
 
 export async function pullSnmpPdu(config: HwopsConfig, host: string, transport?: UdpTransport) {
-  if (!config.snmpCommunity) throw new Error("Set the snmp_community plugin setting. The community string is not accepted as a tool argument.");
+  if (!config.snmpRead) throw new Error("Provide the snmp_community plugin setting. The community string is not accepted as a tool argument.");
   if (config.offline && !transport) {
     throw new Error("Air-gapped mode refuses live SNMP. Pass a captured response through tests, or unset HWOPS_OFFLINE on the management network.");
   }
   const bindings = await snmpGet({
     host,
-    community: config.snmpCommunity,
+    community: config.snmpRead,
     oids: [SNMP_OIDS.sysDescr, SNMP_OIDS.sysName],
     transport,
   });
@@ -88,7 +89,7 @@ async function membersOf(http: HttpClient, config: HwopsConfig, url: string, hea
     const record = member as Record<string, unknown>;
     const link = typeof record["@odata.id"] === "string" ? record["@odata.id"] : undefined;
     if (link && Object.keys(record).length === 1) {
-      out.push(await getJson(http, config, new URL(link, url).toString(), headers));
+      out.push(await getJson(http, config, redfishUrl(url, link), headers));
     } else {
       out.push(record);
     }

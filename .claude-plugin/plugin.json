@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "hw-spec-locator",
   "displayName": "HW Spec Locator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Specifications, Redfish and CMDB inventory, PDU power mapping, firmware-catalog ingestion, and AI-fabric switch config for HPE and Dell infrastructure.",
   "author": {
     "name": "Kaname Kanam"
@@ -94,19 +94,19 @@
     "snow_username": {
       "type": "string",
       "title": "ServiceNow username",
-      "description": "ServiceNow user for basic authentication. Leave empty when snow_token is set.",
+      "description": "ServiceNow user for basic authentication. Leave empty when snow_token is present.",
       "sensitive": true
     },
     "snow_password": {
       "type": "string",
       "title": "ServiceNow password",
-      "description": "ServiceNow password for basic authentication. Leave empty when snow_token is set.",
+      "description": "ServiceNow password for basic authentication. Leave empty when snow_token is present.",
       "sensitive": true
     },
     "snow_token": {
       "type": "string",
       "title": "ServiceNow token",
-      "description": "ServiceNow bearer token. Used instead of snow_username and snow_password when set.",
+      "description": "ServiceNow bearer token. Used instead of snow_username and snow_password when present.",
       "sensitive": true
     },
     "netbox_url": {

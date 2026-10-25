@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "kaname-hwops",
   "description": "Enterprise hardware operations plugins maintained by Kaname Kanam.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": {
     "name": "Kaname Kanam"
   },

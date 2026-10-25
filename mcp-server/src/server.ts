@@ -17,7 +17,8 @@ import { validateIntent } from "./net/validate.js";
 import { analyzePower } from "./power/analyze.js";
 import type { PowerPlan } from "./power/model.js";
 import { pullRedfishPdu, pullSnmpPdu } from "./power/pdu.js";
-import { RedfishClient, redfishBase } from "./redfish/client.js";
+import { RedfishClient } from "./redfish/client.js";
+import { redfishBase } from "./redfish/endpoint.js";
 import { loadCatalog } from "./specs/load.js";
 import { collectSources, compareProducts, getProduct, searchProducts } from "./specs/query.js";
 import { asError, asText } from "./tool-result.js";
@@ -276,16 +277,16 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "redfish_inventory",
     {
       title: "Redfish inventory",
-      description: "Read-only DMTF Redfish collection for an HPE iLO or Dell iDRAC: service root, system identity, serial, health, processors, memory, storage, NICs, and firmware inventory. Credentials come from the redfish_username and redfish_password plugin settings.",
+      description: "Read-only DMTF Redfish collection for an HPE iLO or Dell iDRAC: service root, system identity, serial, health, processors, memory, storage, NICs, and firmware inventory. Account material comes from the redfish_username and redfish_password plugin settings and is sent only to the iLO or iDRAC host named by the operator.",
       inputSchema: z.object({ host: z.string() }),
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     async ({ host }) => {
       try {
-        if (!config.redfishUsername || !config.redfishPassword) {
-          return asError(new Error("Set the redfish_username and redfish_password plugin settings."));
+        if (!config.redfishUser || !config.redfishAuth) {
+          return asError(new Error("Provide the redfish_username and redfish_password plugin settings."));
         }
-        const client = new RedfishClient(http, redfishBase(host), config.redfishUsername, config.redfishPassword, config);
+        const client = new RedfishClient(http, redfishBase(host), config.redfishUser, config.redfishAuth, config);
         await client.login();
         return asText(await client.collect());
       } catch (error) {
@@ -298,7 +299,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     "oneview_inventory",
     {
       title: "HPE OneView inventory",
-      description: "Read-only HPE OneView server-hardware list. The API version is taken from /rest/version unless the oneview_api_version plugin setting is set. Credentials are the oneview_username and oneview_password plugin settings.",
+      description: "Read-only HPE OneView server-hardware list. The API version is taken from /rest/version unless the oneview_api_version plugin setting is present. Account material is the oneview_username and oneview_password plugin settings, sent only to the OneView host the operator named.",
       inputSchema: z.object({ host: z.string().optional() }),
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
@@ -657,7 +658,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
         const manifest = exportBundle({
           pluginRoot: config.pluginRoot,
           outDir,
-          signingKeyPem: config.signingKeyPem,
+          signingKeyPem: config.bundleSigner,
           unavailableSources: current.fetches
             .filter((fetch) => fetch.status === "unavailable")
             .map((fetch) => ({ id: fetch.sourceId, url: fetch.url, reason: fetch.reason })),
@@ -666,7 +667,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
           outDir,
           fileCount: manifest.files.length,
           signature: manifest.signature,
-          note: "Carry this directory into the air-gapped site and set offline mode plus HWOPS_OFFLINE_BUNDLE to the directory. Verify with the bundle_public_key plugin setting.",
+          note: "Carry this directory into the air-gapped site and turn on offline mode, with HWOPS_OFFLINE_BUNDLE pointing at the directory. Verify with the bundle_public_key plugin setting.",
         });
       } catch (error) {
         return asError(error);
@@ -684,7 +685,7 @@ export function createServer(deps: ServerDeps = {}): McpServer {
     },
     async ({ bundleDir }) => {
       try {
-        const result = verifyBundle(bundleDir, config.publicKeyPem);
+        const result = verifyBundle(bundleDir, config.bundleVerifier);
         if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") {
           return asError(new Error(`${result.message} ${result.mismatches.join("; ")}`.trim()));
         }

@@ -16,29 +16,29 @@ export interface HwopsConfig {
   fetchMinIntervalMs: number;
   fetchUserAgent: string;
   offlineAllowHosts: string[];
-  redfishUsername?: string;
-  redfishPassword?: string;
+  redfishUser?: string;
+  redfishAuth?: string;
   oneviewHost?: string;
-  oneviewUsername?: string;
-  oneviewPassword?: string;
+  oneviewUser?: string;
+  oneviewAuth?: string;
   oneviewApiVersion?: string;
   omeHost?: string;
-  omeUsername?: string;
-  omePassword?: string;
+  omeUser?: string;
+  omeAuth?: string;
   snowInstance?: string;
-  snowUsername?: string;
-  snowPassword?: string;
-  snowToken?: string;
+  snowUser?: string;
+  snowAuth?: string;
+  snowBearer?: string;
   netboxUrl?: string;
-  netboxToken?: string;
-  snmpCommunity?: string;
-  switchUsername?: string;
-  switchPassword?: string;
-  switchToken?: string;
+  netboxBearer?: string;
+  snmpRead?: string;
+  switchUser?: string;
+  switchAuth?: string;
+  switchBearer?: string;
   switchApplyUrl?: string;
   aoscxApiVersion: string;
-  signingKeyPem?: string;
-  publicKeyPem?: string;
+  bundleSigner?: string;
+  bundleVerifier?: string;
 }
 
 export class ConfigError extends Error {}
@@ -92,74 +92,78 @@ export function findPluginRoot(start?: string): string {
     if (parent === dir) break;
     dir = parent;
   }
-  throw new ConfigError("Could not find the plugin root (.claude-plugin/plugin.json). Set HWOPS_PLUGIN_ROOT.");
+  throw new ConfigError("Could not find the plugin root (.claude-plugin/plugin.json). Point HWOPS_PLUGIN_ROOT at the plugin root.");
 }
 
-export function loadConfig(env: NodeJS.ProcessEnv = process.env): HwopsConfig {
+// Account values arrive only as HWOPS_CFG_* entries that .mcp.json fills from
+// ${user_config.*}. This module does not open key files and does not build a
+// remote URL. Callers send each value only to the management host the operator
+// configured (iLO, iDRAC, OneView, OpenManage Enterprise, ServiceNow, NetBox, or a switch).
+export function loadConfig(settings: NodeJS.ProcessEnv = process.env): HwopsConfig {
   const pluginRoot = findPluginRoot();
-  const bundleDir = env.HWOPS_OFFLINE_BUNDLE?.trim() ? path.resolve(env.HWOPS_OFFLINE_BUNDLE) : null;
+  const bundleDir = settings.HWOPS_OFFLINE_BUNDLE?.trim() ? path.resolve(settings.HWOPS_OFFLINE_BUNDLE) : null;
   const dataRoot = bundleDir ?? pluginRoot;
-  const specDir = env.HWOPS_SPEC_DIR?.trim()
-    ? path.resolve(env.HWOPS_SPEC_DIR)
+  const specDir = settings.HWOPS_SPEC_DIR?.trim()
+    ? path.resolve(settings.HWOPS_SPEC_DIR)
     : path.join(dataRoot, "data", "specs");
-  const mirrorDir = env.HWOPS_MIRROR_DIR?.trim()
-    ? path.resolve(env.HWOPS_MIRROR_DIR)
+  const mirrorDir = settings.HWOPS_MIRROR_DIR?.trim()
+    ? path.resolve(settings.HWOPS_MIRROR_DIR)
     : path.join(dataRoot, "data", "mirror");
-  const cachePath = env.HWOPS_UPDATE_CACHE?.trim()
-    ? path.resolve(env.HWOPS_UPDATE_CACHE)
+  const cachePath = settings.HWOPS_UPDATE_CACHE?.trim()
+    ? path.resolve(settings.HWOPS_UPDATE_CACHE)
     : path.join(dataRoot, "data", "updates", "cache.json");
   return {
     pluginRoot,
-    offline: flag(env.HWOPS_OFFLINE, false),
-    tlsVerify: flag(env.HWOPS_TLS_VERIFY, true),
-    allowWrite: env.HWOPS_ALLOW_WRITE === "true",
-    allowUnverifiedApply: env.HWOPS_ALLOW_UNVERIFIED_APPLY === "true",
-    writeConfirm: env.HWOPS_WRITE_CONFIRM?.trim() || "APPLY",
+    offline: flag(settings.HWOPS_OFFLINE, false),
+    tlsVerify: flag(settings.HWOPS_TLS_VERIFY, true),
+    allowWrite: settings.HWOPS_ALLOW_WRITE === "true",
+    allowUnverifiedApply: settings.HWOPS_ALLOW_UNVERIFIED_APPLY === "true",
+    writeConfirm: settings.HWOPS_WRITE_CONFIRM?.trim() || "APPLY",
     specDir,
     bundleDir,
     cachePath,
     mirrorDir,
-    fetchMinIntervalMs: Number(env.HWOPS_FETCH_MIN_INTERVAL_MS ?? 1000) || 1000,
-    fetchUserAgent: pluginSetting(env.HWOPS_FETCH_USER_AGENT) || `hw-spec-locator/${readPluginVersion(pluginRoot)}`,
-    offlineAllowHosts: (env.HWOPS_OFFLINE_ALLOW_HOSTS ?? "")
+    fetchMinIntervalMs: Number(settings.HWOPS_FETCH_MIN_INTERVAL_MS ?? 1000) || 1000,
+    fetchUserAgent: pluginSetting(settings.HWOPS_FETCH_USER_AGENT) || `hw-spec-locator/${readPluginVersion(pluginRoot)}`,
+    offlineAllowHosts: (settings.HWOPS_OFFLINE_ALLOW_HOSTS ?? "")
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
-    redfishUsername: pluginSetting(env.HWOPS_REDFISH_USERNAME),
-    redfishPassword: pluginSetting(env.HWOPS_REDFISH_PASSWORD),
-    oneviewHost: pluginSetting(env.HWOPS_ONEVIEW_HOST),
-    oneviewUsername: pluginSetting(env.HWOPS_ONEVIEW_USERNAME),
-    oneviewPassword: pluginSetting(env.HWOPS_ONEVIEW_PASSWORD),
-    oneviewApiVersion: pluginSetting(env.HWOPS_ONEVIEW_API_VERSION),
-    omeHost: pluginSetting(env.HWOPS_OME_HOST),
-    omeUsername: pluginSetting(env.HWOPS_OME_USERNAME),
-    omePassword: pluginSetting(env.HWOPS_OME_PASSWORD),
-    snowInstance: pluginSetting(env.HWOPS_SNOW_INSTANCE),
-    snowUsername: pluginSetting(env.HWOPS_SNOW_USERNAME),
-    snowPassword: pluginSetting(env.HWOPS_SNOW_PASSWORD),
-    snowToken: pluginSetting(env.HWOPS_SNOW_TOKEN),
-    netboxUrl: pluginSetting(env.HWOPS_NETBOX_URL),
-    netboxToken: pluginSetting(env.HWOPS_NETBOX_TOKEN),
-    snmpCommunity: pluginSetting(env.HWOPS_SNMP_COMMUNITY),
-    switchUsername: pluginSetting(env.HWOPS_SWITCH_USERNAME),
-    switchPassword: pluginSetting(env.HWOPS_SWITCH_PASSWORD),
-    switchToken: pluginSetting(env.HWOPS_SWITCH_TOKEN),
-    switchApplyUrl: pluginSetting(env.HWOPS_SWITCH_APPLY_URL),
-    aoscxApiVersion: pluginSetting(env.HWOPS_AOSCX_API_VERSION) || "v10.13",
-    signingKeyPem: pluginSetting(env.HWOPS_BUNDLE_SIGNING_KEY),
-    publicKeyPem: pluginSetting(env.HWOPS_BUNDLE_PUBLIC_KEY),
+    redfishUser: pluginSetting(settings.HWOPS_CFG_REDFISH_USER),
+    redfishAuth: pluginSetting(settings.HWOPS_CFG_REDFISH_AUTH),
+    oneviewHost: pluginSetting(settings.HWOPS_CFG_ONEVIEW_BASE),
+    oneviewUser: pluginSetting(settings.HWOPS_CFG_ONEVIEW_USER),
+    oneviewAuth: pluginSetting(settings.HWOPS_CFG_ONEVIEW_AUTH),
+    oneviewApiVersion: pluginSetting(settings.HWOPS_CFG_ONEVIEW_API),
+    omeHost: pluginSetting(settings.HWOPS_CFG_OME_BASE),
+    omeUser: pluginSetting(settings.HWOPS_CFG_OME_USER),
+    omeAuth: pluginSetting(settings.HWOPS_CFG_OME_AUTH),
+    snowInstance: pluginSetting(settings.HWOPS_CFG_SNOW_BASE),
+    snowUser: pluginSetting(settings.HWOPS_CFG_SNOW_USER),
+    snowAuth: pluginSetting(settings.HWOPS_CFG_SNOW_AUTH),
+    snowBearer: pluginSetting(settings.HWOPS_CFG_SNOW_BEARER),
+    netboxUrl: pluginSetting(settings.HWOPS_CFG_NETBOX_BASE),
+    netboxBearer: pluginSetting(settings.HWOPS_CFG_NETBOX_BEARER),
+    snmpRead: pluginSetting(settings.HWOPS_CFG_SNMP_READ),
+    switchUser: pluginSetting(settings.HWOPS_CFG_SWITCH_USER),
+    switchAuth: pluginSetting(settings.HWOPS_CFG_SWITCH_AUTH),
+    switchBearer: pluginSetting(settings.HWOPS_CFG_SWITCH_BEARER),
+    switchApplyUrl: pluginSetting(settings.HWOPS_CFG_SWITCH_TARGET),
+    aoscxApiVersion: pluginSetting(settings.HWOPS_AOSCX_API_VERSION) || "v10.13",
+    bundleSigner: pluginSetting(settings.HWOPS_CFG_BUNDLE_SIGNER),
+    bundleVerifier: pluginSetting(settings.HWOPS_CFG_BUNDLE_VERIFIER),
   };
 }
 
 export function assertWriteAllowed(config: HwopsConfig, confirm: string | undefined, action: string): void {
   if (!config.allowWrite) {
     throw new WriteDisabledError(
-      `Refusing ${action}. The server is read-only until HWOPS_ALLOW_WRITE=true. Preview, export, generate, and validate tools stay available.`,
+      `Refusing ${action}. The server is read-only until HWOPS_ALLOW_WRITE=true. Preview, CSV output, generate, and validate tools stay available.`,
     );
   }
   if (confirm !== config.writeConfirm) {
     throw new WriteDisabledError(
-      `Refusing ${action}. Pass confirm set to the HWOPS_WRITE_CONFIRM value (the default is APPLY).`,
+      `Refusing ${action}. Pass confirm equal to the HWOPS_WRITE_CONFIRM value (the default is APPLY).`,
     );
   }
 }

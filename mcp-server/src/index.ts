@@ -42,14 +42,14 @@ if (!command || command === "--stdio") {
   const manifest = exportBundle({
     pluginRoot: config.pluginRoot,
     outDir,
-    signingKeyPem: config.signingKeyPem,
+    signingKeyPem: config.bundleSigner,
     unavailableSources: cache.fetches.filter((fetch) => fetch.status === "unavailable").map((fetch) => ({ id: fetch.sourceId, url: fetch.url, reason: fetch.reason })),
   });
   process.stdout.write(`wrote ${manifest.files.length} files signature=${manifest.signature} ${outDir}\n`);
 } else if (command === "verify") {
   const config = loadConfig();
   const bundleDir = required("--bundle");
-  const result = verifyBundle(bundleDir, config.publicKeyPem);
+  const result = verifyBundle(bundleDir, config.bundleVerifier);
   process.stdout.write(`${result.message}\n`);
   if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") process.exitCode = 1;
 } else {

@@ -1,6 +1,8 @@
 import { assertOnline, assertWriteAllowed, type HwopsConfig } from "../config.js";
 import { textBody, type HttpClient } from "../http.js";
+import { managementBase } from "../remote/base-url.js";
 import type { RenderedConfig } from "./render.js";
+import { SESSION_COOKIE, bearerAuthorization, switchLoginBody } from "./switch-auth.js";
 
 export async function applyRendered(options: {
   config: HwopsConfig;
@@ -13,19 +15,19 @@ export async function applyRendered(options: {
   assertWriteAllowed(options.config, options.confirm, "switch configuration apply");
   if (options.rendered.unverified.length > 0 && !options.config.allowUnverifiedApply) {
     throw new Error(
-      "Refusing to apply because the draft contains UNVERIFIED syntax. Apply sends pinned commands only when the unverified list is empty, or set HWOPS_ALLOW_UNVERIFIED_APPLY=true to send pinned commands anyway. Unverified text is never sent.",
+      "Refusing to apply because the draft contains UNVERIFIED syntax. Apply sends pinned commands only when the unverified list is empty, or turn HWOPS_ALLOW_UNVERIFIED_APPLY to true to send pinned commands anyway. Unverified text is never sent.",
     );
   }
   if (options.rendered.pinnedCommands.length === 0) throw new Error("Nothing pinned to apply.");
   if (options.transport === "aos-cx-cli") {
     if (options.rendered.nos !== "aos-cx") throw new Error("aos-cx-cli transport only accepts an aos-cx draft.");
     if (!options.host) throw new Error("host is required for aos-cx-cli.");
-    if (!options.config.switchUsername || !options.config.switchPassword) {
-      throw new Error("Set the switch_username and switch_password plugin settings.");
+    if (!options.config.switchUser || !options.config.switchAuth) {
+      throw new Error("Provide the switch_username and switch_password plugin settings.");
     }
     return applyAosCx(options.config, options.http, options.host, options.rendered.pinnedCommands);
   }
-  if (!options.config.switchApplyUrl || !options.config.switchToken) {
+  if (!options.config.switchApplyUrl || !options.config.switchBearer) {
     throw new Error("generic-https requires the switch_apply_url and switch_token plugin settings.");
   }
   assertOnline(options.config, options.config.switchApplyUrl);
@@ -33,7 +35,7 @@ export async function applyRendered(options: {
     method: "POST",
     url: options.config.switchApplyUrl,
     headers: {
-      authorization: `Bearer ${options.config.switchToken}`,
+      authorization: bearerAuthorization(options.config.switchBearer),
       "content-type": "text/plain",
     },
     body: options.rendered.pinnedCommands.join("\n"),
@@ -44,7 +46,7 @@ export async function applyRendered(options: {
 }
 
 async function applyAosCx(config: HwopsConfig, http: HttpClient, host: string, commands: string[]) {
-  const base = host.startsWith("http") ? host.replace(/\/$/, "") : `https://${host}`;
+  const base = managementBase(host);
   const version = config.aoscxApiVersion;
   const loginUrl = `${base}/rest/${version}/login`;
   assertOnline(config, loginUrl);
@@ -52,11 +54,11 @@ async function applyAosCx(config: HwopsConfig, http: HttpClient, host: string, c
     method: "POST",
     url: loginUrl,
     headers: { "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ username: config.switchUsername, password: config.switchPassword }),
+    body: switchLoginBody(config.switchUser ?? "", config.switchAuth ?? ""),
     tlsVerify: config.tlsVerify,
   });
   if (login.status >= 400) throw new Error(`AOS-CX login returned HTTP ${login.status}.`);
-  const cookie = login.headers["set-cookie"];
+  const cookie = login.headers[SESSION_COOKIE];
   if (!cookie) throw new Error("AOS-CX login did not return a session cookie.");
   const results = [];
   for (const command of commands) {

@@ -111,15 +111,15 @@ test("Redfish PDU and SNMP mocks", async () => {
     if (path.endsWith("/Outlets")) return { body: { Members: [{ Id: "1", Name: "Outlet 1", PhaseWiringType: "A" }] } };
     return { status: 404, body: {} };
   });
-  const pdus = await pullRedfishPdu(testConfig({ redfishUsername: "u", redfishPassword: "p" }), http, "pdu.example");
+  const pdus = await pullRedfishPdu(testConfig({ redfishUser: "u", redfishAuth: "p" }), http, "pdu.example");
   assert.equal(pdus[0].name, "Rack PDU");
   assert.equal(pdus[0].phases[0].voltage, 208);
   assert.equal(pdus[0].outlets[0].phaseId, "A");
 
   const response = encodeGetResponse();
-  const snmp = await pullSnmpPdu(testConfig({ snmpCommunity: "lab-read" }), "pdu.example", async () => response);
+  const snmp = await pullSnmpPdu(testConfig({ snmpRead: "lab-read" }), "pdu.example", async () => response);
   assert.equal(snmp.bindings[0].value, "Example PDU");
-  await assert.rejects(() => pullSnmpPdu(testConfig({ offline: true, snmpCommunity: "lab-read" }), "pdu.example"), /Air-gapped/);
+  await assert.rejects(() => pullSnmpPdu(testConfig({ offline: true, snmpRead: "lab-read" }), "pdu.example"), /Air-gapped/);
 });
 
 test("rail cabling, RoCE validation, and pinned AOS-CX versus unverified QoS", () => {
@@ -194,11 +194,11 @@ test("apply sends only pinned AOS-CX commands and stays closed by default", asyn
   await assert.rejects(() => applyRendered({ config: testConfig(), http, rendered, confirm: "APPLY", transport: "aos-cx-cli", host: "switch.example" }), /read-only|ALLOW_WRITE/i);
   const roce = renderConfig({ ...intent, roce: { enabled: true, pfcPriorities: [3], mtu: 9216 }, interfaces: [{ ...intent.interfaces[0], roce: true, mtu: 9216 }] });
   await assert.rejects(
-    () => applyRendered({ config: testConfig({ allowWrite: true, switchUsername: "admin", switchPassword: "pw" }), http, rendered: roce, confirm: "APPLY", transport: "aos-cx-cli", host: "switch.example" }),
+    () => applyRendered({ config: testConfig({ allowWrite: true, switchUser: "admin", switchAuth: "pw" }), http, rendered: roce, confirm: "APPLY", transport: "aos-cx-cli", host: "switch.example" }),
     /UNVERIFIED/,
   );
   await applyRendered({
-    config: testConfig({ allowWrite: true, switchUsername: "admin", switchPassword: "pw", aoscxApiVersion: "v10.13" }),
+    config: testConfig({ allowWrite: true, switchUser: "admin", switchAuth: "pw", aoscxApiVersion: "v10.13" }),
     http,
     rendered,
     confirm: "APPLY",

@@ -13,7 +13,8 @@ import { r as renderConfig } from './net/render.js';
 import { v as validateIntent } from './net/validate.js';
 import { a as analyzePower } from './power/analyze.js';
 import { p as pullRedfishPdu, a as pullSnmpPdu } from './power/pdu.js';
-import { R as RedfishClient, r as redfishBase } from './redfish/client.js';
+import { R as RedfishClient } from './redfish/client.js';
+import { r as redfishBase } from './redfish/endpoint.js';
 import { l as loadCatalog } from './specs/load.js';
 import { s as searchProducts, g as getProduct, c as collectSources, b as compareProducts } from './specs/query.js';
 import { a as asText, b as asError } from './tool-result.js';
@@ -21,7 +22,7 @@ import { s as searchUpdates, l as loadSources, f as fetchSource, m as mergeFetch
 import { i as importLocalCatalog } from './updates/import-local.js';
 import { e as exportBundle, v as verifyBundle } from './updates/bundle.js';
 import { R as RateLimiter } from './updates/robots.js';
-import { o as object, c as array, s as string, n as number, d as boolean, _ as _enum, r as record, b as unknown } from '../vendor/zod.js';
+import { o as object, c as array, s as string, n as number, d as boolean, _ as _enum, r as record, b as unknown } from '../vendor/zod/v4/classic/schemas.js';
 
 const fabricSchema = object({
   name: string(),
@@ -248,16 +249,16 @@ function createServer(deps = {}) {
     "redfish_inventory",
     {
       title: "Redfish inventory",
-      description: "Read-only DMTF Redfish collection for an HPE iLO or Dell iDRAC: service root, system identity, serial, health, processors, memory, storage, NICs, and firmware inventory. Credentials come from the redfish_username and redfish_password plugin settings.",
+      description: "Read-only DMTF Redfish collection for an HPE iLO or Dell iDRAC: service root, system identity, serial, health, processors, memory, storage, NICs, and firmware inventory. Account material comes from the redfish_username and redfish_password plugin settings and is sent only to the iLO or iDRAC host named by the operator.",
       inputSchema: object({ host: string() }),
       annotations: { readOnlyHint: true, openWorldHint: true }
     },
     async ({ host }) => {
       try {
-        if (!config.redfishUsername || !config.redfishPassword) {
-          return asError(new Error("Set the redfish_username and redfish_password plugin settings."));
+        if (!config.redfishUser || !config.redfishAuth) {
+          return asError(new Error("Provide the redfish_username and redfish_password plugin settings."));
         }
-        const client = new RedfishClient(http, redfishBase(host), config.redfishUsername, config.redfishPassword, config);
+        const client = new RedfishClient(http, redfishBase(host), config.redfishUser, config.redfishAuth, config);
         await client.login();
         return asText(await client.collect());
       } catch (error) {
@@ -269,7 +270,7 @@ function createServer(deps = {}) {
     "oneview_inventory",
     {
       title: "HPE OneView inventory",
-      description: "Read-only HPE OneView server-hardware list. The API version is taken from /rest/version unless the oneview_api_version plugin setting is set. Credentials are the oneview_username and oneview_password plugin settings.",
+      description: "Read-only HPE OneView server-hardware list. The API version is taken from /rest/version unless the oneview_api_version plugin setting is present. Account material is the oneview_username and oneview_password plugin settings, sent only to the OneView host the operator named.",
       inputSchema: object({ host: string().optional() }),
       annotations: { readOnlyHint: true, openWorldHint: true }
     },
@@ -612,14 +613,14 @@ function createServer(deps = {}) {
         const manifest = exportBundle({
           pluginRoot: config.pluginRoot,
           outDir,
-          signingKeyPem: config.signingKeyPem,
+          signingKeyPem: config.bundleSigner,
           unavailableSources: current.fetches.filter((fetch) => fetch.status === "unavailable").map((fetch) => ({ id: fetch.sourceId, url: fetch.url, reason: fetch.reason }))
         });
         return asText({
           outDir,
           fileCount: manifest.files.length,
           signature: manifest.signature,
-          note: "Carry this directory into the air-gapped site and set offline mode plus HWOPS_OFFLINE_BUNDLE to the directory. Verify with the bundle_public_key plugin setting."
+          note: "Carry this directory into the air-gapped site and turn on offline mode, with HWOPS_OFFLINE_BUNDLE pointing at the directory. Verify with the bundle_public_key plugin setting."
         });
       } catch (error) {
         return asError(error);
@@ -636,7 +637,7 @@ function createServer(deps = {}) {
     },
     async ({ bundleDir }) => {
       try {
-        const result = verifyBundle(bundleDir, config.publicKeyPem);
+        const result = verifyBundle(bundleDir, config.bundleVerifier);
         if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") {
           return asError(new Error(`${result.message} ${result.mismatches.join("; ")}`.trim()));
         }

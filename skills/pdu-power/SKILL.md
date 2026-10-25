@@ -1,9 +1,9 @@
 ---
 name: pdu-power
-description: Map device PSUs to PDU outlets, estimate per-phase and per-rack load, and flag redundancy or overload. Use for rack power, GPU server feeds, or a NetBox power export.
+description: Map device PSUs to PDU outlets, estimate per-phase and per-rack load, and flag redundancy or overload. Use for rack power, GPU server feeds, or a NetBox power payload.
 ---
 
-Use `power_analyze` with racks, PDUs (phases, circuits, outlets, ratings), and devices (PSUs and optional `specId` or `loadWatts`). Use `power_pull_pdu` only for a read-only Redfish or SNMP pull. Use `cmdb_preview` with target `netbox` when the user wants power ports, outlets, and feeds exported.
+Use `power_analyze` with racks, PDUs (phases, circuits, outlets, ratings), and devices (PSUs and optional `specId` or `loadWatts`). Use `power_pull_pdu` only for a read-only Redfish or SNMP pull. Use `cmdb_preview` with target `netbox` when the user wants power ports, outlets, and feeds written out.
 
 Rules:
 

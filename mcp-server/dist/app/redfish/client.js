@@ -1,5 +1,7 @@
 import { a as assertOnline } from '../config.js';
 import { d as decodeBody } from '../http.js';
+import { a as redfishUrl } from './endpoint.js';
+import { a as applySession, r as redfishLoginBody, b as readSessionId } from './session.js';
 
 function asRecord(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : null;
@@ -13,25 +15,21 @@ function num(value) {
 class RedfishError extends Error {
 }
 class RedfishClient {
-  constructor(http, baseUrl, username, password, config) {
+  constructor(http, baseUrl, account, auth, config) {
     this.http = http;
     this.baseUrl = baseUrl;
-    this.username = username;
-    this.password = password;
+    this.account = account;
+    this.auth = auth;
     this.config = config;
   }
-  token;
-  url(path) {
-    if (path.startsWith("http://") || path.startsWith("https://")) return path;
-    return new URL(path, this.baseUrl.endsWith("/") ? this.baseUrl : `${this.baseUrl}/`).toString();
-  }
+  sessionId;
   async get(path) {
-    assertOnline(this.config, this.url(path));
+    const target = redfishUrl(this.baseUrl, path);
+    assertOnline(this.config, target);
     const headers = { accept: "application/json" };
-    if (this.token) headers["x-auth-token"] = this.token;
-    else headers.authorization = basic(this.username, this.password);
-    const res = await this.http({ method: "GET", url: this.url(path), headers, tlsVerify: this.config.tlsVerify });
-    if (res.status === 401) throw new RedfishError("Redfish authentication failed. Check the redfish_username and redfish_password plugin settings.");
+    applySession(headers, this.account, this.auth, this.sessionId);
+    const res = await this.http({ method: "GET", url: target, headers, tlsVerify: this.config.tlsVerify });
+    if (res.status === 401) throw new RedfishError("Redfish authentication failed. Check the redfish account plugin settings.");
     if (res.status >= 400) throw new RedfishError(`Redfish GET ${path} returned HTTP ${res.status}.`);
     const parsed = JSON.parse(decodeBody(res).toString("utf8"));
     const record = asRecord(parsed);
@@ -39,21 +37,21 @@ class RedfishClient {
     return record;
   }
   async login() {
-    const sessionUrl = this.url("/redfish/v1/SessionService/Sessions");
+    const sessionUrl = redfishUrl(this.baseUrl, "/redfish/v1/SessionService/Sessions");
     assertOnline(this.config, sessionUrl);
     const res = await this.http({
       method: "POST",
       url: sessionUrl,
       headers: { "content-type": "application/json", accept: "application/json" },
-      body: JSON.stringify({ UserName: this.username, Password: this.password }),
+      body: redfishLoginBody(this.account, this.auth),
       tlsVerify: this.config.tlsVerify
     });
-    const token = res.headers["x-auth-token"];
-    if ((res.status === 200 || res.status === 201) && token) {
-      this.token = token;
+    const sessionId = readSessionId(res.headers);
+    if ((res.status === 200 || res.status === 201) && sessionId) {
+      this.sessionId = sessionId;
       return;
     }
-    this.token = void 0;
+    this.sessionId = void 0;
   }
   async members(collectionPath) {
     const collection = await this.get(collectionPath);
@@ -213,12 +211,5 @@ function detectVendor(manufacturer, oem) {
   if (text.includes("dell")) return "Dell";
   return "unknown";
 }
-function basic(username, password) {
-  return `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
-}
-function redfishBase(host) {
-  if (host.startsWith("http://") || host.startsWith("https://")) return host.replace(/\/$/, "");
-  return `https://${host}`;
-}
 
-export { RedfishClient as R, redfishBase as r };
+export { RedfishClient as R };

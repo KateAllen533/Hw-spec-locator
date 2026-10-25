@@ -48,7 +48,7 @@
     "family": "HPE Aruba Networking CX 9300",
     "status": "included",
     "productIds": ["hpe-aruba-cx-9300-32d"],
-    "reason": "CX 9300 QuickSpecs retrieved 2026-10-24. Other Aruba and Juniper AI switches are not in the starter set."
+    "reason": "CX 9300 QuickSpecs retrieved 2026-10-24. Other Aruba and Juniper AI switches are not in the starter catalog."
   },
   {
     "family": "Juniper AI networking",
@@ -87,6 +87,6 @@
     "family": "Dell PowerSwitch Z9864F-ON",
     "status": "included",
     "productIds": ["dell-powerswitch-z9864f-on"],
-    "reason": "Specification sheet retrieved 2026-10-24. OS10 S-series switches are not in the starter set; OS10 templates remain available."
+    "reason": "Specification sheet retrieved 2026-10-24. OS10 S-series switches are not in the starter catalog; OS10 templates remain available."
   }
 ]

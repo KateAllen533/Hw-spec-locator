@@ -9,13 +9,34 @@ import { e as exportBundle, v as verifyBundle } from './app/updates/bundle.js';
 import { i as importLocalCatalog } from './app/updates/import-local.js';
 import { R as RateLimiter } from './app/updates/robots.js';
 import 'node:process';
-import './vendor/zod.js';
+import './vendor/zod/v4/core/parse.js';
+import './vendor/zod/v4/core/runtime.js';
+import './vendor/zod/v4/core/errors.js';
+import './vendor/zod/v4/mini/schemas.js';
+import './vendor/zod/v4/core/schemas.js';
+import './vendor/zod/v4/core/checks.js';
+import './vendor/zod/v4/core/regexes.js';
+import './vendor/zod/v4/core/doc.js';
+import './vendor/zod/v4/core/versions.js';
+import './vendor/zod/v3/types.js';
+import './vendor/zod/v3/ZodError.js';
+import './vendor/zod/v3/helpers/util.js';
+import './vendor/zod/v3/helpers/errorUtil.js';
+import './vendor/zod/v3/helpers/parseUtil.js';
+import './vendor/zod/v3/errors.js';
+import './vendor/zod/v3/locales/en.js';
+import './vendor/zod/v4/classic/schemas.js';
+import './vendor/zod/v4/core/json-schema-processors.js';
+import './vendor/zod/v4/core/to-json-schema.js';
+import './vendor/zod/v4/core/registries.js';
+import './vendor/zod/v4/locales/en.js';
+import './vendor/zod/v4/classic/parse.js';
+import './vendor/zod/v4/classic/errors.js';
+import './vendor/zod/v4/core/api.js';
+import './vendor/zod/v4/core/memoizer.js';
+import './vendor/zod/v4/classic/iso.js';
 import './vendor/zod-to-json-schema.js';
-import './vendor/ajv.js';
-import './vendor/fast-deep-equal.js';
-import './vendor/json-schema-traverse.js';
-import './vendor/fast-uri.js';
-import './vendor/ajv-formats.js';
+import './app/shims/ajv.js';
 import 'node:fs';
 import 'node:url';
 import 'node:http';
@@ -27,9 +48,14 @@ import './app/specs/load.js';
 import './app/specs/integrity.js';
 import './app/cmdb/targets.js';
 import './app/cmdb/model.js';
+import './app/cmdb/wire-auth.js';
 import './app/integrations/ome.js';
+import './app/remote/base-url.js';
+import './app/integrations/ome-auth.js';
 import './app/integrations/oneview.js';
+import './app/integrations/oneview-auth.js';
 import './app/net/apply.js';
+import './app/net/switch-auth.js';
 import './app/net/cabling.js';
 import './app/net/diff.js';
 import './app/net/render.js';
@@ -37,6 +63,8 @@ import './app/net/validate.js';
 import './app/power/analyze.js';
 import './app/power/model.js';
 import './app/power/pdu.js';
+import './app/redfish/endpoint.js';
+import './app/redfish/session.js';
 import './app/power/snmp.js';
 import 'node:dgram';
 import './app/redfish/client.js';
@@ -85,7 +113,7 @@ if (!command || command === "--stdio") {
   const manifest = exportBundle({
     pluginRoot: config.pluginRoot,
     outDir,
-    signingKeyPem: config.signingKeyPem,
+    signingKeyPem: config.bundleSigner,
     unavailableSources: cache.fetches.filter((fetch) => fetch.status === "unavailable").map((fetch) => ({ id: fetch.sourceId, url: fetch.url, reason: fetch.reason }))
   });
   process.stdout.write(`wrote ${manifest.files.length} files signature=${manifest.signature} ${outDir}
@@ -93,7 +121,7 @@ if (!command || command === "--stdio") {
 } else if (command === "verify") {
   const config = loadConfig();
   const bundleDir = required("--bundle");
-  const result = verifyBundle(bundleDir, config.publicKeyPem);
+  const result = verifyBundle(bundleDir, config.bundleVerifier);
   process.stdout.write(`${result.message}
 `);
   if (!result.checksumsOk || result.signature === "invalid" || result.signature === "unchecked") process.exitCode = 1;

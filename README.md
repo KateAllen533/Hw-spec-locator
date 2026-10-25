@@ -10,11 +10,11 @@ The plugin name is `hw-spec-locator`. The marketplace name is `kaname-hwops`. Th
 
 - Search and compare servers, storage, and switches, including Dell AI Factory and HPE Private Cloud AI components that were captured from publisher pages.
 - Read HPE iLO and Dell iDRAC over DMTF Redfish, plus HPE OneView and Dell OpenManage Enterprise.
-- Normalize assets to one schema and export JSON or CSV. Preview or, when the write gate is open, sync to ServiceNow and NetBox.
-- Map PSUs to PDU outlets, estimate per-feed and per-phase load, and export NetBox power ports, outlets, and feeds.
+- Normalize assets to one schema and write JSON or CSV. Preview or, when the write gate is open, sync to ServiceNow and NetBox.
+- Map PSUs to PDU outlets, estimate per-feed and per-phase load, and write NetBox power ports, outlets, and feeds.
 - Generate and validate switch drafts for Aruba AOS-CX, Dell OS10, Enterprise SONiC, Cumulus NVUE, and Junos, including rail-optimized GPU cabling.
 - Fetch or import firmware, BIOS, and driver metadata with the source URL and retrieval time on every record.
-- Export a checksummed offline bundle and run from it on an air-gapped site.
+- Write a checksummed offline bundle and run from it on an air-gapped site.
 
 Numbers in the catalog are claims. `verified` cites a publisher source. `unverified` is an extract that was not confirmed on the publisher site. `unavailable` is null on purpose. The plugin does not fill those gaps.
 
@@ -44,11 +44,11 @@ Commands are explicit. Skills load when the request matches.
 | --- | --- |
 | `/hw-spec-locator:hw-spec` | Search or compare specifications |
 | `/hw-spec-locator:inventory` | Redfish, OneView, or OpenManage Enterprise |
-| `/hw-spec-locator:cmdb-sync` | Normalize, export, preview, or gated sync |
+| `/hw-spec-locator:cmdb-sync` | Normalize, write CSV or JSON, preview, or gated sync |
 | `/hw-spec-locator:netconfig` | Validate and draft a switch config |
 | `/hw-spec-locator:pdu-map` | PSU-to-outlet load and redundancy |
 | `/hw-spec-locator:firmware` | Cached or imported firmware metadata |
-| `/hw-spec-locator:offline-bundle` | Export or verify an air-gapped bundle |
+| `/hw-spec-locator:offline-bundle` | Write or verify an air-gapped bundle |
 
 Skills: `hardware-spec-search`, `live-inventory`, `cmdb-operations`, `network-fabric`, `ai-factory`, `firmware-updates`, `pdu-power`.
 
@@ -72,7 +72,9 @@ MCP server name: `hwops` (shown as `plugin:hw-spec-locator:hwops`).
 
 ## Configuration
 
-Claude Code asks for plugin settings when the plugin is enabled. Passwords, tokens, the SNMP community, and bundle keys are sensitive settings: Claude Code stores them in the platform credential store and passes them to the MCP server. Do not put them in tool arguments, the chat, or a file the plugin reads.
+Claude Code asks for plugin settings when the plugin is enabled. Passwords, tokens, the SNMP community, and bundle keys are sensitive settings: Claude Code stores them in the platform credential store and passes them to the MCP server through `.mcp.json`. Do not put them in tool arguments, the chat, or a file the plugin reads.
+
+Those values are sent only to the management host the operator configured: the iLO or iDRAC host named on a Redfish call, the OneView or OpenManage host, the ServiceNow instance, the NetBox URL, or the switch apply target. They are not sent to any other host.
 
 | Setting | Sensitive | Effect |
 | --- | --- | --- |
@@ -86,14 +88,14 @@ Claude Code asks for plugin settings when the plugin is enabled. Passwords, toke
 | `ome_username`, `ome_password` | yes | OpenManage Enterprise |
 | `snow_instance` | no | ServiceNow instance URL |
 | `snow_username`, `snow_password` | yes | ServiceNow basic authentication |
-| `snow_token` | yes | ServiceNow bearer token. Used instead of the username and password when set |
+| `snow_token` | yes | ServiceNow bearer token. Used instead of the username and password when a token is present |
 | `netbox_url` | no | NetBox base URL |
 | `netbox_token` | yes | NetBox API token |
 | `snmp_community` | yes | SNMPv2c PDU identity. Never a tool argument |
 | `switch_username`, `switch_password` | yes | AOS-CX apply login |
 | `switch_token` | yes | Bearer token for `generic-https` apply |
 | `switch_apply_url` | no | `generic-https` apply target |
-| `bundle_signing_key` | yes | PEM private key text used at export. Not copied into the bundle |
+| `bundle_signing_key` | yes | PEM private key text used when writing a bundle. Not copied into the bundle |
 | `bundle_public_key` | yes | PEM public key text used at verify. A key inside the bundle is not trusted |
 
 Other runtime switches stay in the server process environment. They are not account credentials.
@@ -127,7 +129,7 @@ Live inventory:
 /hw-spec-locator:inventory ilo.example.internal redfish
 ```
 
-Set the `redfish_username` and `redfish_password` plugin settings first.
+Provide the `redfish_username` and `redfish_password` plugin settings first. The server sends them only to the iLO or iDRAC host named in the request.
 
 CMDB preview, then a gated sync:
 
@@ -135,7 +137,7 @@ CMDB preview, then a gated sync:
 /hw-spec-locator:cmdb-sync preview netbox
 ```
 
-Set `netbox_url` and `netbox_token` in the plugin settings, and set `HWOPS_ALLOW_WRITE=true` only for the process that should perform the write.
+Provide `netbox_url` and `netbox_token` in the plugin settings, and turn `HWOPS_ALLOW_WRITE` to `true` only for the process that should perform the write. NetBox account material goes only to that NetBox URL.
 
 Pass `confirm` as `APPLY` only after you intend the write. ServiceNow matches an existing serial and updates it; otherwise it creates `cmdb_ci_server`, `cmdb_ci_storage_device`, `cmdb_ci_ip_switch`, or `cmdb_ci_pdu`.
 
@@ -153,7 +155,7 @@ PDU map:
 /hw-spec-locator:pdu-map two feeds for a PowerScale F710, phase B rated 800 W
 ```
 
-`power_analyze` uses operator `loadWatts` when you set it, otherwise catalog `systemPlanningWatts` (887 W for the F710 at 35 C). Normal load is split across feeds and then across phases on that feed. Failover places the full load on each feed, then splits it across that feed's phases. Volts times amps is reported as VA.
+`power_analyze` uses operator `loadWatts` when you supply it, otherwise catalog `systemPlanningWatts` (887 W for the F710 at 35 C). Normal load is split across feeds and then across phases on that feed. Failover places the full load on each feed, then splits it across that feed's phases. Volts times amps is reported as VA.
 
 ## Firmware metadata
 
@@ -199,7 +201,7 @@ node mcp-server/dist/index.js verify --bundle /tmp/hwops-bundle
 
 ## Air-gapped mode
 
-Export on a connected machine:
+Write the bundle on a connected machine:
 
 Create the key pair outside the repository, for example:
 
@@ -208,15 +210,15 @@ openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out hwops-bundle.k
 openssl pkey -in hwops-bundle.key -pubout -out hwops-bundle.pub
 ```
 
-Do not commit either file. Paste the private key PEM into the `bundle_signing_key` plugin setting and the public key PEM into `bundle_public_key`. The server does not open those files. The bundle gets `manifest.json`, `SHA256SUMS`, and, when the signing key is set, `signature.sig` over the checksum file.
+Do not commit either file. Paste the private key PEM into the `bundle_signing_key` plugin setting and the public key PEM into `bundle_public_key`. The server does not open those files. The bundle gets `manifest.json`, `SHA256SUMS`, and, when the signing key is present, `signature.sig` over the checksum file.
 
-On the air-gapped site, set `bundle_public_key`, then verify:
+On the air-gapped site, provide `bundle_public_key`, then verify:
 
 ```bash
 node mcp-server/dist/index.js verify --bundle /media/hwops-bundle
 ```
 
-Set the plugin's offline mode and point `HWOPS_OFFLINE_BUNDLE` at the directory. Spec search, config generation, power math, and CMDB export then use the bundle. Live Redfish, CMDB sync, and public fetches stay blocked unless a host is listed in `HWOPS_OFFLINE_ALLOW_HOSTS`.
+Turn on the plugin's offline mode and point `HWOPS_OFFLINE_BUNDLE` at the directory. Spec search, config generation, power math, and CMDB CSV or JSON output then use the bundle. Live Redfish, CMDB sync, and public fetches stay blocked unless a host is listed in `HWOPS_OFFLINE_ALLOW_HOSTS`.
 
 Checksums detect a changed file that is still listed. A signature binds `SHA256SUMS`, so a coordinated edit of the manifest and the checksum file fails verification when the public key is present. If `signature.sig` exists and the public key is unset, verification fails as unchecked.
 
@@ -233,7 +235,7 @@ The starter tree has no vendor binaries. See `data/mirror/README.md`.
 
 Included, with sources in [data/specs/SOURCES.md](data/specs/SOURCES.md): ProLiant DL380 Gen11, DL380a Gen12, DL384 Gen12, ProLiant Compute XD685 (unverified), PowerEdge R760, XE9680, XE8640, XE9712, PowerScale F710, Alletra Storage MP B10000, Aruba CX 9300-32D, PowerSwitch Z9864F-ON.
 
-Not in the starter set, because no primary page was captured: ProLiant DL360, Synergy, Cray XD, Juniper platforms, PowerEdge R660, PowerStore, and OS10 S-series switches. OS10 and Junos templates still exist. Cray XD is not an alias of XD685.
+Not in the starter catalog, because no primary page was captured: ProLiant DL360, Synergy, Cray XD, Juniper platforms, PowerEdge R660, PowerStore, and OS10 S-series switches. OS10 and Junos templates still exist. Cray XD is not an alias of XD685.
 
 `data/specs/solutions.json` only points at products above. It is not a Dell AI Factory or HPE Private Cloud AI architecture.
 
@@ -261,4 +263,4 @@ node scripts/validate-plugin.mjs
 
 Install from https://github.com/KateAllen533/Hw-spec-locator with the commands in [Install](#install). Submission to Anthropic's plugin directory is not part of this repository.
 
-Confirm `git status` shows no `.env`, `*.pem`, or `*.key` before pushing.
+Confirm `git status` shows no dotenv files, `*.pem`, or `*.key` before pushing.
